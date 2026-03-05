@@ -174,7 +174,11 @@ Example format:
 - **Visual hierarchy**: bullet points, tables, or blockquotes every ~200 words
 - **Charts**: For data-heavy articles, include 1-2 charts using the **create-geo-charts** skill. Each chart adds a text summary, HTML data table, and Dataset JSON-LD — all of which boost GEO citability. Place charts in Part 3 (problem stats) or Part 4 (comparison).
 - **Citations**: minimum 5-8 external authoritative citations; every statistic linked inline
-- **Images**: 2 landscape images with keyword-relevant ALT text
+- **Images & Visuals**: Don't chase a fixed image count — add visuals only when they carry data, explain a process, or prove a claim. Decorative images add near-zero SEO/GEO value.
+  - Every image needs: descriptive alt text (state the conclusion, not the visual form), compressed format (WebP preferred, SVG for charts), lazy loading below the fold
+  - Every chart/graph MUST have a text summary + HTML data table alongside it — AI engines cite text, not pixels. The image alone is invisible to LLMs.
+  - Alt text example: BAD: "bar chart" → GOOD: "Bar chart showing GEO-optimized pages earn 41% more AI citations (KDD 2024, N=10K queries)"
+  - For GEO: the text layer (summary, data table, JSON-LD) around a chart matters far more than the chart image itself
 - **Freshness**: include year in title where relevant; note "Updated [Month Year]" if applicable
 
 ---

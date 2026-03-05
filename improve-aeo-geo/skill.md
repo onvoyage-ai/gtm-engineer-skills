@@ -170,7 +170,13 @@ Every page needs `og:title` and `og:description`. Also add `og:image`, `og:url`,
 
 ### Image Alt Coverage (8 pts)
 
-80%+ of `<img>` tags must have `alt` attributes. Use descriptive text. Decorative images: `alt=""`.
+80%+ of `<img>` tags must have `alt` attributes. Decorative images: `alt=""`.
+
+Alt text should describe the **conclusion**, not the visual form. AI engines and screen readers both need the takeaway:
+- BAD: `alt="bar chart"` or `alt="graph showing results"`
+- GOOD: `alt="GEO-optimized pages earn 41% more AI citations (KDD 2024, N=10K queries)"`
+
+For charts and data visuals: the image alone is invisible to LLMs. Every chart needs a text summary and HTML data table alongside it — that's what AI actually cites. Use the **create-geo-charts** skill for data visualizations that need the full GEO text layer.
 
 ### RSS/Atom Feed (8 pts)
 

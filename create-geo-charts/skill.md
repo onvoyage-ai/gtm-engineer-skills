@@ -255,14 +255,21 @@ Add JSON-LD for the dataset:
 
 ### Step 7: Image Optimization
 
+**Critical GEO principle: AI engines cite text, not pixels.** The chart image is for human readers. The text summary, HTML data table, and JSON-LD are what AI actually extracts and cites. A chart without its text layer is invisible to LLMs.
+
+Don't add visuals to hit a target count. Add a chart only when it carries data, explains a process, or proves a claim. Decorative graphics add zero GEO value.
+
 For the chart image file itself:
 
 - **Filename**: Descriptive, hyphenated. Example: `ai-overview-citation-rate-by-rank-2025.svg`
-- **Alt text**: Describe the conclusion, not the visual. Example: `Bar chart showing AI Overviews cite top-10 organic pages 78% of the time, dropping to 12% for pages ranked 11-20 (2025 benchmark, N=50K queries)`
+- **Alt text**: Describe the **conclusion**, not the visual form. AI models and screen readers both need the takeaway, not a description of bars and axes.
+  - BAD: `"Bar chart showing data"` or `"Chart 1"`
+  - GOOD: `"GEO-optimized pages earn 41% more AI citations than unoptimized pages (KDD 2024, N=10K queries)"`
 - **Keep alt under 125 characters** when possible; use the data table as the extended description
 - **Compression**: SVG → run through SVGO. WebP → quality 80. PNG → use as fallback only.
+- **Lazy loading**: Add `loading="lazy"` to chart images below the fold. Never lazy-load the first visible chart.
 - **Add to image sitemap** for faster discovery
-- **Use `<figure>` + `<figcaption>`** to wrap every chart
+- **Use `<figure>` + `<figcaption>`** to wrap every chart — `<figcaption>` text is crawlable and citable
 
 ### Step 8: Internal Linking
 
