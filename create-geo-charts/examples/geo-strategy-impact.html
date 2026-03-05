@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GEO Strategies Boost AI Visibility Up to 41% | Voyage</title>
+  <meta name="description" content="Comparison of 7 GEO optimization strategies and their impact on AI engine visibility, based on the KDD 2024 GEO paper analyzing 10K queries across 9 generative engines.">
+  <style>
+    :root {
+      --chart-blue: #2563EB;
+      --chart-blue-light: #93C5FD;
+      --chart-teal: #0D9488;
+      --chart-amber: #D97706;
+      --chart-gray: #6B7280;
+      --chart-bg: #F8FAFC;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --border: #E2E8F0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: var(--text-primary); max-width: 800px; margin: 0 auto; padding: 2rem 1rem; line-height: 1.6; }
+    h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .key-finding { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 640px; }
+    figure { background: var(--chart-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+    figcaption { font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem; }
+    .what-this-means { margin: 1.5rem 0; padding: 1rem 1.25rem; background: #F0F9FF; border-left: 3px solid var(--chart-blue); border-radius: 0 6px 6px 0; }
+    .what-this-means strong { display: block; margin-bottom: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    caption { font-weight: 600; text-align: left; padding-bottom: 0.75rem; }
+    th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    thead th { background: var(--chart-bg); font-weight: 600; }
+    tbody tr:hover { background: #F8FAFC; }
+    .download-link { display: inline-block; margin-top: 0.75rem; color: var(--chart-blue); font-size: 0.85rem; }
+  </style>
+
+  <!-- JSON-LD Dataset Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "GEO Strategy Visibility Impact — Adding Quotations Lifts AI Visibility by 41%",
+    "description": "Comparison of 7 Generative Engine Optimization strategies and their measured impact on AI search visibility, based on the GEO paper (Aggarwal et al., KDD 2024) analyzing 10K queries across 9 generative engines.",
+    "temporalCoverage": "2023/2024",
+    "variableMeasured": [
+      { "@type": "PropertyValue", "name": "Visibility Improvement", "unitText": "%" }
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "Voyage",
+      "url": "https://onvoyage.ai"
+    },
+    "datePublished": "2026-03-05",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isBasedOn": "https://arxiv.org/abs/2311.09735",
+    "distribution": {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "geo-strategy-impact.csv"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- 1. TAKEAWAY HEADING -->
+  <h2>Adding Authoritative Quotations Lifts AI Visibility by 41%</h2>
+
+  <!-- 2. KEY FINDING SUMMARY -->
+  <p class="key-finding">
+    Authoritative quotations are the single most effective GEO strategy, boosting AI engine visibility by 41%. Statistics (+33%) and cited sources (+28%) round out the top three. Lower-ranked sites benefit most — pages originally ranked 4th-5th saw up to +115% improvement. Based on 10K queries tested across 9 generative engines (Aggarwal et al., KDD 2024).
+  </p>
+
+  <!-- 3. CHART -->
+  <figure>
+    <svg role="img" aria-labelledby="chart1-title chart1-desc" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+      <title id="chart1-title">GEO Strategy Visibility Impact</title>
+      <desc id="chart1-desc">Horizontal bar chart showing 7 GEO strategies ranked by visibility improvement percentage. Authoritative Quotations leads at 41%, followed by Statistics at 33%, Cite Sources at 28%, Fluency Optimization at 15%, Technical Terms at 11%, Easy Language at 8%, and Keyword Stuffing at -10%.</desc>
+
+      <!-- Background -->
+      <rect width="720" height="380" fill="#F8FAFC" rx="4"/>
+
+      <!-- Grid lines -->
+      <line x1="240" y1="30" x2="240" y2="320" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="340" y1="30" x2="340" y2="320" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="440" y1="30" x2="440" y2="320" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="540" y1="30" x2="540" y2="320" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="640" y1="30" x2="640" y2="320" stroke="#E2E8F0" stroke-width="1"/>
+
+      <!-- Zero line -->
+      <line x1="240" y1="30" x2="240" y2="320" stroke="#94A3B8" stroke-width="1.5"/>
+
+      <!-- X-axis labels -->
+      <text x="140" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">-20%</text>
+      <text x="240" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">0%</text>
+      <text x="340" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">+10%</text>
+      <text x="440" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">+20%</text>
+      <text x="540" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">+30%</text>
+      <text x="640" y="350" fill="#64748B" font-size="11" text-anchor="middle" font-family="system-ui, sans-serif">+40%</text>
+
+      <!-- Bars + Labels -->
+      <!-- Authoritative Quotations: +41% -->
+      <text x="230" y="60" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Authoritative Quotations</text>
+      <rect x="240" y="45" width="410" height="28" fill="#2563EB" rx="3"/>
+      <text x="658" y="64" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+41%</text>
+
+      <!-- Statistics: +33% -->
+      <text x="230" y="102" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Statistics &amp; Data Points</text>
+      <rect x="240" y="87" width="330" height="28" fill="#2563EB" rx="3"/>
+      <text x="578" y="106" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+33%</text>
+
+      <!-- Cite Sources: +28% -->
+      <text x="230" y="144" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Cite Sources Inline</text>
+      <rect x="240" y="129" width="280" height="28" fill="#2563EB" rx="3"/>
+      <text x="528" y="148" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+28%</text>
+
+      <!-- Fluency: +15% -->
+      <text x="230" y="186" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Fluency Optimization</text>
+      <rect x="240" y="171" width="150" height="28" fill="#93C5FD" rx="3"/>
+      <text x="398" y="190" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+15%</text>
+
+      <!-- Technical Terms: +11% -->
+      <text x="230" y="228" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Technical Terms</text>
+      <rect x="240" y="213" width="110" height="28" fill="#93C5FD" rx="3"/>
+      <text x="358" y="232" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+11%</text>
+
+      <!-- Easy Language: +8% -->
+      <text x="230" y="270" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Easy Language</text>
+      <rect x="240" y="255" width="80" height="28" fill="#93C5FD" rx="3"/>
+      <text x="328" y="274" fill="#1E40AF" font-size="12" font-weight="600" font-family="system-ui, sans-serif">+8%</text>
+
+      <!-- Keyword Stuffing: -10% -->
+      <text x="230" y="312" fill="#0F172A" font-size="13" text-anchor="end" font-family="system-ui, sans-serif">Keyword Stuffing</text>
+      <rect x="140" y="297" width="100" height="28" fill="#EF4444" rx="3"/>
+      <text x="128" y="316" fill="#DC2626" font-size="12" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">-10%</text>
+    </svg>
+
+    <!-- 4. SOURCE & METHODOLOGY -->
+    <figcaption>
+      Source: Aggarwal et al., "GEO: Generative Engine Optimization," KDD 2024 (<a href="https://arxiv.org/abs/2311.09735">arXiv</a>). 10,000 queries tested across 9 generative engines. Methodology: Each strategy applied independently to baseline content; visibility measured as impression-weighted position improvement.
+    </figcaption>
+  </figure>
+
+  <!-- 5. WHAT THIS MEANS -->
+  <div class="what-this-means">
+    <strong>What this means:</strong>
+    Content that includes direct quotes from named experts and specific data points earns significantly more AI citations than content optimized purely for readability or keywords. For brands competing in AI search, the fastest path to visibility is adding verifiable quotations and statistics to existing pages — not rewriting them. Keyword stuffing actively harms AI visibility, unlike traditional SEO where its effect is merely neutral.
+  </div>
+
+  <!-- 6. DATA TABLE -->
+  <table>
+    <caption>GEO Strategy Visibility Impact (% change)</caption>
+    <thead>
+      <tr>
+        <th scope="col">Strategy</th>
+        <th scope="col">Visibility Change (%)</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Authoritative Quotations</th><td>+41%</td><td>High Impact</td></tr>
+      <tr><th scope="row">Statistics &amp; Data Points</th><td>+33%</td><td>High Impact</td></tr>
+      <tr><th scope="row">Cite Sources Inline</th><td>+28%</td><td>High Impact</td></tr>
+      <tr><th scope="row">Fluency Optimization</th><td>+15%</td><td>Medium Impact</td></tr>
+      <tr><th scope="row">Technical Terms</th><td>+11%</td><td>Medium Impact</td></tr>
+      <tr><th scope="row">Easy Language</th><td>+8%</td><td>Medium Impact</td></tr>
+      <tr><th scope="row">Keyword Stuffing</th><td>-10%</td><td>Harmful</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 7. DOWNLOADABLE DATA -->
+  <a class="download-link" href="geo-strategy-impact.csv" download>Download data (CSV)</a>
+
+</body>
+</html>
