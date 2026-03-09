@@ -64,13 +64,16 @@ Key principles:
 - Use consistent design system (colors, legend, citation footer) across all charts
 
 ### `research-keywords/`
-Researches and delivers a prioritized keyword list for SEO and GEO using web search and AI analysis — no paid tools required. 4-phase interactive skill: brand intelligence → keyword discovery (6 methods) → clustering & scoring → structured deliverable.
+Researches and delivers a prioritized keyword list for SEO and GEO. 5-phase interactive skill: brand intelligence → keyword discovery (6 methods) → validation & pruning → analysis & clustering → structured deliverable. Integrates Ahrefs/Semrush CSV data when available.
 
 Key principles:
 - `skill.md` is an agent prompt — keep it actionable, not explanatory
-- No paid tools required — all research uses web search, website crawling, and AI analysis
-- No fabricated search volumes — use qualitative signals (autocomplete, PAA, AI Overview presence) as proxies
-- GEO is a first-class scoring dimension alongside relevance and business value
+- **Target keywords must be 1-3 words** — longer phrases go in Blog Topics or GEO Queries sections
+- SEO keywords and GEO queries are separate outputs — short terms for ranking vs full questions for AI citation
+- Kill dead keywords early — 50 real keywords beats 100 with half zero-volume
+- No fabricated search volumes — use paid tool data when available, qualitative signals when not
+- Integrates Ahrefs/Semrush CSV exports to filter by real volume and KD
+- Priority based on KD: Easy Win (0-15), Target (16-50), Content (broad), Hard (50+)
 - Interactive: get user confirmation before moving between phases
 - Output feeds directly into write-seo-blog, geo-content-research, and create-geo-charts skills
 
