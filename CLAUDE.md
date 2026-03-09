@@ -81,6 +81,16 @@ Key principles:
 - Interactive: get user confirmation before moving between phases
 - Output feeds directly into write-seo-blog, geo-content-research, and create-geo-charts skills
 
+### `research-brand/`
+Generates a complete Brand DNA file from a URL. Crawls the website, searches the web for third-party descriptions and funding info, identifies competitors, and produces a structured `brand_dna.md`. The starting point for all other skills.
+
+Key principles:
+- `skill.md` is an agent prompt — keep it actionable, not explanatory
+- Crawl first, search second — website is primary source, web search fills gaps
+- Third-party language over marketing language — how others describe the product is more accurate
+- No fabrication — say "Not found" if info isn't available, never guess
+- Output feeds directly into research-keywords, geo-content-research, and improve-aeo-geo skills
+
 ## Adding a New Skill
 
 1. Create a new directory: `<verb>-<noun>/` (e.g., `audit-landing-page/`)
