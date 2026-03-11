@@ -94,6 +94,12 @@ Pages must NOT have `nosnippet`, `noai`, or `noimageai` in robots meta tags or `
 
 Pages must NOT have `<meta name="robots" content="noindex">` on public-facing pages. Search codebase for `noindex` and remove where inappropriate.
 
+### Pure Client-Side Rendering (12 pts)
+
+AI agents (like GPTBot, ClaudeBot, and the `aeo-audit.sh` crawler) often do not execute JavaScript. If you detect critical content loaded exclusively via `useEffect` (React), `onMount` (Svelte/Nuxt), or mounted to a blank `<div id="root"></div>`, point this out as a Priority 1 blocker.
+
+**Fix**: Rewrite the component to fetch data server-side (SSR) or at build time (SSG). Pure client-side SPAs are entirely invisible to most AI bots.
+
 ---
 
 ## Priority 2: High-Impact Structure
