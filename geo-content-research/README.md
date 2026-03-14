@@ -30,20 +30,28 @@ The skill is **interactive** — it asks you questions and waits for answers at 
 
 ---
 
-## The 5-Phase Process
+## The 6-Phase Process
 
 ### Phase 1: Product Intelligence
 The skill interviews you about your product, category, competitors, and existing content. Builds the context needed for all research phases.
 
-### Phase 2: AI Recommendation Research
-Reverse-engineers how AI engines evaluate your category:
-- Maps 20-30 questions buyers actually ask
+### Phase 2: AI Prompt Research
+Discovers the exact queries people type into AI chatbots about your category:
+- Maps questions across 8 query types (definition, recommendation, comparison, evaluation, how-to, cost, landscape, use case)
+- Mines Reddit for real user language and pain points
 - Identifies 8-12 criteria AI uses to recommend products
 - Finds 10-15 trusted sources AI cites in your niche
 
 This is the "algorithm blueprint" — you get to see what AI looks for before writing a word.
 
-### Phase 3: Content Blueprint
+### Phase 3: GEO Prompt Target Table
+**The primary research deliverable.** Takes the raw prompts from Phase 2, deduplicates, scores, and produces a prioritized table:
+- Every prompt tagged by business-value tier: Buy, Solve, or Learn
+- Scored by citability and competition level
+- Each prompt includes a specific mechanism for how the brand gets mentioned in AI answers
+- Sorted by priority: Easy Wins first, then Targets
+
+### Phase 4: Content Blueprint
 Designs the exact pages to build, in priority order. Every page is mapped to a specific query type AI will match it to:
 
 | Page Type | Purpose |
@@ -55,7 +63,7 @@ Designs the exact pages to build, in priority order. Every page is mapped to a s
 | Myth-Busting Page | Captures doubt/trust queries near purchase |
 | Glossary / Technical Reference | Becomes the definition source AI cites |
 
-### Phase 4: Content Generation
+### Phase 5: Content Generation
 Writes each page with the 5 AI-ready zones every page must have:
 
 | Zone | Purpose |
@@ -68,7 +76,7 @@ Writes each page with the 5 AI-ready zones every page must have:
 
 Every page includes the appropriate structured data (Product, FAQPage, HowTo, ClaimReview, Comparison JSON-LD).
 
-### Phase 5: Authority Infiltration Plan
+### Phase 6: Authority Infiltration Plan
 Builds off-site signals that make AI engines trust your website as a primary source:
 - Quora answer strategy (ChatGPT crawls Quora heavily)
 - Reddit data-posting approach (data only, no links in posts)
