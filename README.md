@@ -1,67 +1,88 @@
 # GTM Engineer Skills
 
-A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for go-to-market engineering — content, SEO, and AI discoverability.
+A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
+
+---
+
+## Workflow
+
+Skills are designed to run in sequence. Each step produces files that feed into the next.
+
+```
+                          ┌─────────────────┐
+                          │  research-brand  │
+                          │  URL → brand_dna │
+                          └────────┬────────┘
+                                   │
+                    ┌──────────────┴──────────────┐
+                    ▼                              ▼
+          ┌──────────────────┐          ┌───────────────────────┐
+          │ research-keywords│          │  geo-content-research │
+          │ → keyword_research│         │ → geo_prompt_targets  │
+          └────────┬─────────┘          └───────────┬───────────┘
+                   │                                │
+                   └──────────────┬─────────────────┘
+                                  ▼
+                       ┌─────────────────────┐
+                       │ geo-content-planning │
+                       │ → content_architecture│
+                       └──────────┬──────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    ▼                            ▼
+        ┌───────────────────────┐    ┌────────────────────┐
+        │ write-seo-geo-content │    │  create-geo-charts  │
+        │ → markdown articles   │    │ → SVG + data tables │
+        └───────────┬───────────┘    └──────────┬─────────┘
+                    │                            │
+                    └─────────────┬──────────────┘
+                                  ▼
+                         ┌────────────────┐
+                         │  audit-content  │
+                         │ verify sources  │
+                         └───────┬────────┘
+                                 │
+                    ┌────────────┴────────────┐
+                    ▼                         ▼
+       ┌──────────────────────┐   ┌───────────────────┐
+       │ build-resource-pages │   │  improve-aeo-geo  │
+       │ content → frontend   │   │ website code fixes │
+       └──────────────────────┘   └───────────────────┘
+```
+
+### Step by step
+
+| Step | Skill | Input | Output |
+|------|-------|-------|--------|
+| 1 | **`research-brand`** | Company URL | `brand_dna.md` — positioning, audience, competitors, voice |
+| 2a | **`research-keywords`** | Brand DNA + product category | `keyword_research.md` — prioritized keywords by intent |
+| 2b | **`geo-content-research`** | Brand DNA + product category | `geo_prompt_targets.md` — AI prompts by business-value tier |
+| 3 | **`geo-content-planning`** | Brand DNA + keywords + GEO prompts | `content_architecture.md` — page plan with types, URLs, priority |
+| 4a | **`write-seo-geo-content`** | Content architecture + research | Markdown articles with frontmatter |
+| 4b | **`create-geo-charts`** | Data from articles | SVG charts + HTML tables + JSON-LD |
+| 5 | **`audit-content`** | Articles + Brand DNA | Audit reports — verified URLs, stats, claims |
+| 6a | **`build-resource-pages`** | Audited content + client codebase | Frontend resource center pages |
+| 6b | **`improve-aeo-geo`** | Client website codebase | Code fixes for AI discoverability |
+
+Steps marked **a/b** can run in parallel.
 
 ---
 
 ## Skills
 
-### [Improve Website AEO/GEO](improve-aeo-geo/)
-Audit and improve your website's AI Engine Optimization (AEO) and Generative Engine Optimization (GEO) score. Makes your site more discoverable and citable by ChatGPT, Claude, Perplexity, and Google AI Overviews.
+### [Research Brand DNA](research-brand/)
+
+Researches a company from its URL and produces a Brand DNA file covering positioning, audience, competitors, voice, and messaging.
 
 ```bash
-mkdir -p ~/.claude/skills/improve-aeo-geo
-curl -o ~/.claude/skills/improve-aeo-geo/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/improve-aeo-geo/skill.md
+mkdir -p ~/.claude/skills/research-brand
+curl -o ~/.claude/skills/research-brand/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-brand/skill.md
 ```
-
-**What it does**: Detects your framework, audits 16 foundational checks + 6 GEO content quality dimensions, makes targeted code changes, and targets an 80+ AEO score (B+ grade or higher).
-
-**Check your score first**: [aeo-audit.sh](https://aeo-audit.sh/)
-
----
-
-### [Write SEO + GEO Content](write-seo-geo-content/)
-Write product-led pages that rank in search engines and get cited by AI engines. Follows a research-then-write methodology with page-type frameworks, GEO prompt coverage, and a no-fabricated-stats policy.
-
-```bash
-mkdir -p ~/.claude/skills/write-seo-geo-content
-curl -o ~/.claude/skills/write-seo-geo-content/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/write-seo-geo-content/skill.md
-```
-
-**What it does**: Operates in Planning Mode (topic ideation) or Writing Mode (full article production). Completes pre-writing research before writing a single word.
-
----
-
-### [GEO Content Research & Generation](geo-content-research/)
-Reverse-engineer how AI engines evaluate your product category, then generate AI-ready content that gets your brand cited in ChatGPT, Gemini, and Perplexity answers. No social media, no paid ads — pure content structure and authority.
-
-```bash
-mkdir -p ~/.claude/skills/geo-content-research
-curl -o ~/.claude/skills/geo-content-research/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/geo-content-research/skill.md
-```
-
-**What it does**: 5-phase interactive process — product research → AI algorithm reverse-engineering → content blueprint → page-by-page content generation → off-site authority plan. Guides you through every step.
-
----
-
-### [Create GEO/SEO Charts & Data Visualizations](create-geo-charts/)
-Create data visualizations that AI engines can parse, quote, and cite. Every chart comes with a full text layer — summary, HTML data table, CSV, and Dataset JSON-LD — because AI engines cite text, not pixels.
-
-```bash
-mkdir -p ~/.claude/skills/create-geo-charts
-curl -o ~/.claude/skills/create-geo-charts/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/create-geo-charts/skill.md
-```
-
-**What it does**: Generates comparison charts, benchmark tables, flowcharts, and more with all 9 required components: takeaway heading, key finding summary, chart, source line, interpretation, HTML data table, downloadable CSV, Dataset JSON-LD, and optimized image metadata.
-
----
 
 ### [Research SEO/GEO Keywords](research-keywords/)
-Research and deliver a prioritized keyword list for SEO and GEO — using web search and AI analysis instead of paid tools like Ahrefs or Semrush.
+
+Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush.
 
 ```bash
 mkdir -p ~/.claude/skills/research-keywords
@@ -69,7 +90,77 @@ curl -o ~/.claude/skills/research-keywords/skill.md \
   https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-keywords/skill.md
 ```
 
-**What it does**: 4-phase interactive process — brand intelligence → keyword discovery (6 methods) → clustering & GEO scoring → structured deliverable. Outputs a prioritized keyword file with topic clusters, GEO opportunity scores, quick wins, and competitor gaps.
+### [GEO Content Research](geo-content-research/)
+
+Researches what prompts people ask AI engines about a product category. Produces a GEO prompt target table with business-value tiers (Buy/Solve/Learn).
+
+```bash
+mkdir -p ~/.claude/skills/geo-content-research
+curl -o ~/.claude/skills/geo-content-research/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/geo-content-research/skill.md
+```
+
+### [GEO Content Planning](geo-content-planning/)
+
+Reads brand DNA, keyword research, and GEO prompt targets, then produces a content architecture — what pages to create, their types, URLs, and priority.
+
+```bash
+mkdir -p ~/.claude/skills/geo-content-planning
+curl -o ~/.claude/skills/geo-content-planning/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/geo-content-planning/skill.md
+```
+
+### [Write SEO + GEO Content](write-seo-geo-content/)
+
+Writes product-led content pages optimized for search engines and AI engine citations. Research-first methodology with page-type frameworks and no fabricated stats.
+
+```bash
+mkdir -p ~/.claude/skills/write-seo-geo-content
+curl -o ~/.claude/skills/write-seo-geo-content/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/write-seo-geo-content/skill.md
+```
+
+### [Create GEO/SEO Charts](create-geo-charts/)
+
+Creates data visualizations that AI engines can parse, quote, and cite. Every chart includes a text summary, HTML data table, and JSON-LD.
+
+```bash
+mkdir -p ~/.claude/skills/create-geo-charts
+curl -o ~/.claude/skills/create-geo-charts/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/create-geo-charts/skill.md
+```
+
+### [Audit Content](audit-content/)
+
+Verifies truthfulness, accuracy, and link integrity of content before publishing. Catches fabricated statistics, dead URLs, and misattributed sources.
+
+```bash
+mkdir -p ~/.claude/skills/audit-content
+curl -o ~/.claude/skills/audit-content/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/audit-content/skill.md
+```
+
+### [Build Resource Pages](build-resource-pages/)
+
+Takes existing content markdown files and builds production-ready resource center pages on client websites using their existing tech stack and design system.
+
+```bash
+mkdir -p ~/.claude/skills/build-resource-pages
+curl -o ~/.claude/skills/build-resource-pages/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/build-resource-pages/skill.md
+```
+
+### [Improve Website AEO/GEO](improve-aeo-geo/)
+
+Audits a website codebase and makes code changes so AI engines can better discover, parse, quote, and cite the site.
+
+```bash
+mkdir -p ~/.claude/skills/improve-aeo-geo
+curl -o ~/.claude/skills/improve-aeo-geo/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/improve-aeo-geo/skill.md
+```
+
+**Check your score first**: [aeo-audit.sh](https://aeo-audit.sh/)
 
 ---
 
