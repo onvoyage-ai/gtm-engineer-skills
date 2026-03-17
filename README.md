@@ -9,45 +9,45 @@ A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sk
 Skills are designed to run in sequence. Each step produces files that feed into the next.
 
 ```
-                          ┌─────────────────┐
-                          │  research-brand  │
-                          │  URL → brand_dna │
-                          └────────┬────────┘
-                                   │
-                    ┌──────────────┴──────────────┐
-                    ▼                              ▼
-          ┌──────────────────┐          ┌───────────────────────┐
-          │ research-keywords│          │  geo-content-research │
-          │ → keyword_research│         │ → geo_prompt_targets  │
-          └────────┬─────────┘          └───────────┬───────────┘
-                   │                                │
-                   └──────────────┬─────────────────┘
-                                  ▼
-                       ┌─────────────────────┐
-                       │ geo-content-planning │
-                       │ → content_architecture│
-                       └──────────┬──────────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    ▼                            ▼
-        ┌───────────────────────┐    ┌────────────────────┐
-        │ write-seo-geo-content │    │  create-geo-charts  │
-        │ → markdown articles   │    │ → SVG + data tables │
-        └───────────┬───────────┘    └──────────┬─────────┘
-                    │                            │
-                    └─────────────┬──────────────┘
-                                  ▼
-                         ┌────────────────┐
-                         │  audit-content  │
-                         │ verify sources  │
-                         └───────┬────────┘
-                                 │
-                    ┌────────────┴────────────┐
-                    ▼                         ▼
-       ┌──────────────────────┐   ┌───────────────────┐
-       │ build-resource-pages │   │  improve-aeo-geo  │
-       │ content → frontend   │   │ website code fixes │
-       └──────────────────────┘   └───────────────────┘
+              ┌───────────────────────────┐
+              │       research-brand      │
+              │       URL → brand_dna     │
+              └─────────────┬─────────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+┌───────────────────────┐   ┌───────────────────────┐
+│   research-keywords   │   │ geo-content-research  │
+│  → keyword_research   │   │ → geo_prompt_targets  │
+└───────────┬───────────┘   └───────────┬───────────┘
+            │                           │
+            └─────────────┬─────────────┘
+                          ▼
+              ┌───────────────────────────┐
+              │   geo-content-planning    │
+              │  → content_architecture   │
+              └─────────────┬─────────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+┌───────────────────────┐   ┌───────────────────────┐
+│ write-seo-geo-content │   │  create-geo-charts    │
+│  → markdown articles  │   │  → SVG + data tables  │
+└───────────┬───────────┘   └───────────┬───────────┘
+            │                           │
+            └─────────────┬─────────────┘
+                          ▼
+              ┌───────────────────────────┐
+              │      audit-content        │
+              │      verify sources       │
+              └─────────────┬─────────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+┌───────────────────────┐   ┌───────────────────────┐
+│ build-resource-pages  │   │   improve-aeo-geo     │
+│  content → frontend   │   │  website code fixes   │
+└───────────────────────┘   └───────────────────────┘
 ```
 
 ### Step by step
