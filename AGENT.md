@@ -8,8 +8,10 @@ Skills for go-to-market engineering. Use them on real customers, improve them ba
 2. **`research-keywords`** — SEO keywords (1-3 words), validated with Ahrefs/Semrush
 3. **`geo-content-research`** — GEO prompt targets (Buy/Solve/Learn) for AI citations
 4. **`write-seo-geo-content`** — Product-led SEO and GEO content pages
-5. **`create-geo-charts`** — Data visualizations with AI-readable text layers
-6. **`improve-aeo-geo`** — Website AEO/GEO audit and fixes
+5. **`build-resource-pages`** — Build frontend resource pages from existing content
+6. **`audit-content`** — Verify URLs, statistics, citations, and company claims before publishing
+7. **`create-geo-charts`** — Data visualizations with AI-readable text layers
+8. **`improve-aeo-geo`** — Website AEO/GEO audit and fixes
 
 ## `workspace/` Directory
 

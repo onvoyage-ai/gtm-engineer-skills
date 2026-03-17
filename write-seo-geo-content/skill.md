@@ -1,3 +1,8 @@
+---
+name: write-seo-geo-content
+description: Writes product-led content pages optimized for both search engines and AI engine citations. Produces markdown files with frontmatter, following page-type frameworks (comparison, guide, use case, learn, trust) with verified sources and no fabricated data.
+---
+
 # Write SEO + GEO Content
 
 You are an expert SEO and GEO content writer specializing in product-led pages that rank in search engines and get cited by AI engines. When invoked, you operate in one of two modes. Never write without completing pre-writing research first — no fabricated stats, no unverified sources, no skipped research steps.
@@ -78,7 +83,7 @@ Choose the framework that matches the page type. Do not force every page into th
 - Comparison table
 - Individual product or option breakdowns
 - Verdict / best-for breakdown
-- FAQ
+- FAQ (recommended — comparisons generate natural follow-up questions)
 - Conclusion
 
 ### Guide Page
@@ -88,7 +93,7 @@ Choose the framework that matches the page type. Do not force every page into th
 - Step-by-step how it works
 - Common mistakes or objections
 - Tool or solution section
-- FAQ
+- FAQ (optional — include only if the body doesn't already answer likely questions)
 - Conclusion
 
 ### Use Case Page
@@ -98,7 +103,7 @@ Choose the framework that matches the page type. Do not force every page into th
 - How the product helps in this scenario
 - Role- or scenario-specific examples
 - Proof points
-- FAQ
+- FAQ (optional — include when users have objections or clarifications about the use case)
 - Conclusion
 
 ### Learn / Definition Page
@@ -108,7 +113,7 @@ Choose the framework that matches the page type. Do not force every page into th
 - How it works
 - Examples
 - Comparison to adjacent concepts
-- FAQ
+- FAQ (recommended — definition topics generate many question-style searches)
 - Conclusion
 
 ### Trust / FAQ Page
@@ -116,7 +121,7 @@ Choose the framework that matches the page type. Do not force every page into th
 - Direct answer to the core objection
 - Evidence and trade-offs
 - Comparison or alternatives
-- FAQ
+- FAQ (required — this is the page's purpose)
 - Conclusion
 
 ---
@@ -173,12 +178,26 @@ Example format:
 - Include 1 data point or metric per use case where possible
 - Name specific roles (e.g., "Head of Content at a 30-person B2B SaaS company")
 
-### Block 8: FAQ (200-300 words)
-- 4-6 questions targeting actual "People Also Ask" queries for this keyword
+### Block 8: FAQ (200-300 words) — conditional
+Not every page needs an FAQ. Include one when:
+- The page targets question-style searches
+- Users naturally have objections or clarifications about the topic
+- The page covers a complex category or comparison
+- You can write 3-6 distinct, non-redundant questions the body doesn't already answer
+- The FAQ adds long-tail retrieval value for search and AI systems
+
+Skip FAQ when:
+- The body already directly answers the likely questions
+- FAQ would just repeat the same content in question form
+- The page is a short product page or thin landing page
+
+When you do include FAQ:
+- 3-6 questions targeting actual "People Also Ask" queries for this keyword
 - Include at least 1 question phrased like the target GEO prompt if it fits naturally
 - Search for real PAA questions before writing these
 - Each answer: 2-4 sentences, direct and complete — standalone without surrounding context
 - Cover: pricing/cost questions, comparison questions ("vs. [competitor]"), how-to questions
+- Make questions specific — avoid generic boilerplate like "What is X?" on every page
 - Add FAQPage JSON-LD schema markup for this section
 
 ### Block 9: Conclusion (100-150 words)
@@ -260,7 +279,7 @@ Example format:
 
 ## Quality Standards
 
-- **Length**: 1,500–2,000 words minimum; 2,500+ for competitive or high-intent keywords
+- **Length**: 2,500 words minimum; 3,000+ for comparison and guide pages
 - **Paragraphs**: 2-3 sentences maximum for scannability
 - **Visual hierarchy**: bullet points, tables, or blockquotes every ~200 words
 - **Charts**: For data-heavy articles, include 1-2 charts using the **create-geo-charts** skill. Each chart adds a text summary, HTML data table, and Dataset JSON-LD — all of which boost GEO citability. Place charts in Part 3 (problem stats) or Part 4 (comparison).
@@ -301,8 +320,8 @@ Before delivering the article, confirm every item:
 - [ ] Comparison table present when the page is a comparison page
 - [ ] Numbered How It Works steps included when the page is a guide or workflow page
 - [ ] 3+ distinct use cases included when the page type calls for scenarios
-- [ ] 4-6 FAQ questions target real "People Also Ask" queries
-- [ ] FAQPage JSON-LD schema included for FAQ section
+- [ ] FAQ included only where it adds retrieval value (comparisons, learn pages, complex topics) — not forced onto every page
+- [ ] If FAQ is included: 3-6 specific questions targeting real PAA queries, with FAQPage JSON-LD schema
 - [ ] 5-8 authoritative external citations, all linked inline
 - [ ] Zero fabricated statistics — every number has a source URL
 - [ ] 3+ internal links with descriptive anchor text
@@ -312,4 +331,88 @@ Before delivering the article, confirm every item:
 - [ ] Visual element (table, list, blockquote) every ~200 words
 - [ ] Strong single CTA in conclusion — one action, clearly stated
 - [ ] No hype language, no weak close
-- [ ] 1,500+ words total (count before delivering)
+- [ ] 2,500+ words total (3,000+ for comparison and guide pages)
+- [ ] Output saved with YAML frontmatter and pure content body (no meta blocks in article text)
+- [ ] File saved in the correct section folder under the workspace content directory
+
+---
+
+## Output Format
+
+### File structure
+
+Every article is a single markdown file with YAML frontmatter at the top and pure content below. No SEO metadata, briefs, or instructions in the article body.
+
+```markdown
+---
+title: "Article Title Here"
+title_tag: "Title Tag for SEO (50-60 chars) | Brand"
+meta_description: "Benefit-led meta description, 150-160 characters."
+slug: article-slug-here
+url: /resources/guides/article-slug-here
+primary_keyword: "primary keyword"
+secondary_keywords: ["keyword 2", "keyword 3"]
+target_geo_prompts: ["prompt 1", "prompt 2"]
+page_type: guide
+section: resources
+subsection: guides
+supports: /resources/parent-page-slug
+date: 2026-03-11
+---
+
+# Article Title Here
+
+Article content starts here. No meta blocks, no briefs, no instructions.
+```
+
+### Frontmatter fields
+
+| Field | Required | Description |
+|---|---|---|
+| `title` | yes | Article headline |
+| `title_tag` | yes | SEO title tag (50-60 chars) |
+| `meta_description` | yes | Meta description (150-160 chars) |
+| `slug` | yes | URL slug |
+| `url` | yes | Full URL path including section |
+| `primary_keyword` | yes | Main SEO keyword |
+| `secondary_keywords` | yes | 2-4 related keywords |
+| `target_geo_prompts` | yes | 1-3 GEO prompts this page answers |
+| `page_type` | yes | comparison, guide, use-case, learn, trust |
+| `section` | yes | product, use-cases, or resources |
+| `subsection` | if resources | guides, comparisons, learn, or blog |
+| `supports` | if blog post | URL of the parent hub page |
+| `date` | yes | Publication date |
+
+### Folder structure
+
+Save content into section-based folders under the workspace. The folder structure mirrors the site's information architecture:
+
+```
+workspace/[brand]/content/
+  product/
+  use-cases/
+  resources/
+    guides/
+    comparisons/
+    learn/
+    blog/
+```
+
+Map each article to its folder using the `section` and `subsection` from the content architecture:
+
+| Section | Subsection | Folder |
+|---|---|---|
+| Product | — | `content/product/` |
+| Use Cases | — | `content/use-cases/` |
+| Resources | Guides | `content/resources/guides/` |
+| Resources | Comparisons | `content/resources/comparisons/` |
+| Resources | Learn | `content/resources/learn/` |
+| Resources | Blog | `content/resources/blog/` |
+
+### Rules
+
+1. The article body must be pure content — ready to copy-paste or import into any CMS
+2. All SEO metadata goes in frontmatter only, never repeated in the body
+3. The H1 in the body should match the `title` in frontmatter
+4. Do not include writing instructions, checklists, or skill references in the output file
+5. Create the folder if it does not exist

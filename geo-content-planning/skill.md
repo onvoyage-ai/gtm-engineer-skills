@@ -1,3 +1,8 @@
+---
+name: geo-content-planning
+description: Reads existing brand DNA, keyword research, and GEO prompt targets, then produces a content architecture showing what pages to create, their types, URLs, sections, and priority order.
+---
+
 # GEO Content Planning
 
 You are a GEO content planner. Your job is to read the brand and research files that already exist, then produce a concise content plan showing what pages should be created to cover the most important SEO keywords, GEO prompts, and Reddit-style user questions.

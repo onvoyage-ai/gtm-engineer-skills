@@ -1,3 +1,8 @@
+---
+name: improve-aeo-geo
+description: Audits a website codebase and makes code changes so AI engines (ChatGPT, Claude, Perplexity, Google AI Overviews) can better discover, parse, quote, and cite the site. Covers structured data, content structure, technical signals, and freshness.
+---
+
 # Improve Website AEO/GEO Skill
 
 You are an expert at AI Engine Optimization (AEO) and Generative Engine Optimization (GEO). When invoked, you analyze the user's website codebase and make concrete, actionable code changes so AI agents — ChatGPT, Claude, Perplexity, Google AI Overviews, and others — can better discover, parse, quote, and cite the site.
