@@ -1,10 +1,10 @@
 # GTM Engineer Skills
 
+A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
+
 <p align="center">
   <img src="assets/logo.svg" alt="GTM Engineer Skills" width="200" />
 </p>
-
-A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
 
 ---
 
