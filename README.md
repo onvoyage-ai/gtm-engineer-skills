@@ -12,49 +12,43 @@ A collection of agent skills for go-to-market engineering — research, content,
 
 Skills are designed to run in sequence. Each step produces files that feed into the next.
 
-```
-                          ┌───────────────────────────┐
-                          │       research-brand      │
-                          │       URL → brand_dna     │
-                          └─────────────┬─────────────┘
-                                        │
-            ┌───────────────────────────┼───────────────────────────┐
-            │                           │                           │
-            ▼                           ▼                           ▼
-┌───────────────────────┐   ┌───────────────────────────┐   ┌───────────────────────┐
-│   research-keywords   │   │ reddit-opportunity-       │   │  geo-content-research │
-│  → keyword_research   │   │ research                  │   │ → geo_prompt_targets  │
-│                       │   │ → reddit_opportunities    │   │                       │
-└─────────────┬─────────┘   └─────────────┬─────────────┘   └─────────────┬─────────┘
-              └───────────────┬───────────┴───────────┬───────────────────┘
-                              │                       │
-                              ▼                       ▼
-               ┌───────────────────────────┐   ┌───────────────────────┐
-               │   geo-content-planning    │   │    build-backlinks    │
-               │  → content_architecture   │   │   → backlink_plan     │
-               └─────────────┬─────────────┘   └───────────────────────┘
-                             │
-                ┌────────────┴────────────┐
-                │                         │
-                ▼                         ▼
-┌───────────────────────────┐   ┌───────────────────────────┐
-│  write-seo-geo-content    │   │     create-geo-charts     │
-│  → markdown articles      │   │   → SVG + data tables     │
-└─────────────┬─────────────┘   └─────────────┬─────────────┘
-              └───────────────┬───────────────┘
-                              ▼
-               ┌───────────────────────────┐
-               │      audit-content        │
-               │      verify sources       │
-               └─────────────┬─────────────┘
-                             │
-                ┌────────────┴────────────┐
-                │                         │
-                ▼                         ▼
-┌───────────────────────────┐   ┌───────────────────────────┐
-│   build-resource-pages    │   │      improve-aeo-geo      │
-│    content → frontend     │   │    website code fixes     │
-└───────────────────────────┘   └───────────────────────────┘
+```mermaid
+flowchart TD
+    RB["research-brand<br/>URL → brand_dna"]
+
+    RK["research-keywords<br/>→ keyword_research"]
+    ROR["reddit-opportunity-research<br/>→ reddit_opportunities"]
+    GCR["geo-content-research<br/>→ geo_prompt_targets"]
+
+    GCP["geo-content-planning<br/>→ content_architecture"]
+    BB["build-backlinks<br/>→ backlink_plan"]
+
+    WSGC["write-seo-geo-content<br/>→ markdown articles"]
+    CGC["create-geo-charts<br/>→ SVG + data tables"]
+
+    AC["audit-content<br/>verify sources"]
+
+    BRP["build-resource-pages<br/>content → frontend"]
+    IAG["improve-aeo-geo<br/>website code fixes"]
+
+    RB --> RK
+    RB --> ROR
+    RB --> GCR
+
+    RK --> GCP
+    ROR --> GCP
+    GCR --> GCP
+    ROR --> BB
+    GCR --> BB
+
+    GCP --> WSGC
+    GCP --> CGC
+
+    WSGC --> AC
+    CGC --> AC
+
+    AC --> BRP
+    AC --> IAG
 ```
 
 ### Step by step
