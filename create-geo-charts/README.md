@@ -1,6 +1,6 @@
 # Create GEO/SEO Charts & Data Visualizations
 
-A Claude Code skill for creating data visualizations that AI engines can parse, quote, and cite.
+An agent skill for creating data visualizations that AI engines can parse, quote, and cite.
 
 ## What It Does
 
@@ -24,21 +24,7 @@ Key research backing:
 
 ## Install
 
-Add this to your project's `.claude/settings.json`:
-
-```json
-{
-  "skills": [
-    "https://raw.githubusercontent.com/[your-org]/gtm-engineer-skills/main/create-geo-charts/skill.md"
-  ]
-}
-```
-
-Or install via curl:
-
-```bash
-mkdir -p .claude && curl -s https://raw.githubusercontent.com/[your-org]/gtm-engineer-skills/main/create-geo-charts/skill.md -o .claude/skill-create-geo-charts.md
-```
+Clone the repo, then symlink or copy `create-geo-charts/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for the shared installation pattern.
 
 ## Usage
 

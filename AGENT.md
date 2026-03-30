@@ -23,7 +23,7 @@ Gitignored. Customer work goes here: `workspace/<customer-name>/`. Store `brand_
 
 ```
 <skill-name>/
-├── skill.md      ← Agent prompt
+├── SKILL.md      ← Agent prompt
 ├── README.md     ← Install instructions
 └── examples/     ← Optional
 ```

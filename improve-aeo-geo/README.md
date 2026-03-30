@@ -6,7 +6,7 @@ The web is no longer read only by humans. AI agents — ChatGPT, Claude, Perplex
 
 **If your site isn't optimized for AI, you're invisible to a growing share of your audience.**
 
-This is a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that audits your website's codebase and makes concrete improvements to boost your AEO (AI Engine Optimization) and GEO (Generative Engine Optimization) scores.
+This is an agent skill that audits your website's codebase and makes concrete improvements to boost your AEO (AI Engine Optimization) and GEO (Generative Engine Optimization) scores.
 
 **Check your score at [aeo-audit.sh](https://aeo-audit.sh/)** — then use this skill to improve it.
 
@@ -14,15 +14,11 @@ This is a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill th
 
 ## Install
 
-```bash
-claude skill add --from https://github.com/onvoyage-ai/gtm-engineer-skills/improve-aeo-geo
-```
-
-Or manually copy `skill.md` into your project's `.claude/skills/` directory.
+Clone the repo, then symlink or copy `improve-aeo-geo/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for installation examples.
 
 ## Usage
 
-Once installed, invoke the skill in Claude Code:
+Once installed, invoke the skill by name:
 
 ```
 /improve-aeo-geo

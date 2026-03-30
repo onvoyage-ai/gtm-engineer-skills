@@ -13,10 +13,7 @@ Give it a URL → get a full brand intelligence file:
 
 ## Install
 
-```bash
-curl -s https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-brand/skill.md \
-  | claude skill add --name "research-brand" --from -
-```
+Clone the repo, then symlink or copy `research-brand/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for installation examples.
 
 ## Usage
 

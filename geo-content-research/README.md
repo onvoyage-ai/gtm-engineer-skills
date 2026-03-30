@@ -1,6 +1,6 @@
 # GEO Content Research & Generation
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that reverse-engineers how AI engines evaluate your product category, then generates the exact content structure needed to get your brand cited in ChatGPT, Gemini, and Perplexity answers.
+An agent skill that reverse-engineers how AI engines evaluate your product category, then generates the exact content structure needed to get your brand cited in ChatGPT, Gemini, and Perplexity answers.
 
 **No paid ads. No social media required. No bidding war.**
 
@@ -10,11 +10,7 @@ AI engines have no paid ranking. ChatGPT recommendations are earned — through 
 
 ## Install
 
-```bash
-claude skill add --from https://github.com/onvoyage-ai/gtm-engineer-skills/geo-content-research
-```
-
-Or manually copy `skill.md` into your project's `.claude/skills/` directory.
+Clone the repo, then symlink or copy `geo-content-research/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for the shared installation pattern.
 
 ## Usage
 

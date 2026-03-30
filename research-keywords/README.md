@@ -1,6 +1,6 @@
 # Research SEO/GEO Keywords
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that researches and delivers a prioritized keyword list for SEO and GEO — using web search and AI analysis instead of paid tools like Ahrefs or Semrush.
+An agent skill that researches and delivers a prioritized keyword list for SEO and GEO — using web search and AI analysis instead of paid tools like Ahrefs or Semrush.
 
 **No Ahrefs. No Semrush required.**
 
@@ -10,11 +10,7 @@ Uses web search, website crawling, and LLM analysis to find, cluster, and priori
 
 ## Install
 
-```bash
-claude skill add --from https://github.com/onvoyage-ai/gtm-engineer-skills/research-keywords
-```
-
-Or manually copy `skill.md` into your project's `.claude/skills/` directory.
+Clone the repo, then symlink or copy `research-keywords/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for installation examples.
 
 ## Usage
 

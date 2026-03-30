@@ -1,20 +1,16 @@
 # Write SEO + GEO Content
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill for writing product-led content that ranks in search engines and gets cited by AI engines. Follows a structured research-then-write methodology — no fabricated stats, no skipped research.
+An agent skill for writing product-led content that ranks in search engines and gets cited by AI engines. Follows a structured research-then-write methodology — no fabricated stats, no skipped research.
 
 ---
 
 ## Install
 
-```bash
-claude skill add --from https://github.com/onvoyage-ai/gtm-engineer-skills/write-seo-geo-content
-```
-
-Or manually copy `skill.md` into your project's `.claude/skills/` directory.
+Clone the repo, then symlink or copy `write-seo-geo-content/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for the shared installation pattern.
 
 ## Usage
 
-Once installed, invoke the skill in Claude Code:
+Once installed, invoke the skill by name:
 
 ```
 /write-seo-geo-content

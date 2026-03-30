@@ -4,13 +4,7 @@ Takes existing content (markdown files from the writing skills) and builds produ
 
 ## Install
 
-Add to your Claude Code project settings:
-
-```json
-{
-  "skills": ["./write-resource-content/skill.md"]
-}
-```
+Clone the repo, then symlink or copy `build-resource-pages/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for installation examples.
 
 ## What It Does
 

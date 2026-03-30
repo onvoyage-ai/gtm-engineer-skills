@@ -1,6 +1,6 @@
 # GTM Engineer Skills
 
-A collection of Codex/Claude Code style skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
+A collection of agent skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation. The repo is meant to work for both Codex and Claude Code.
 
 <p align="center">
   <img src="assets/logo.svg" alt="GTM Engineer Skills" width="200" />
@@ -70,9 +70,40 @@ Skills are designed to run in sequence. Each step produces files that feed into 
 
 Steps marked **a/b/c** can run in parallel.
 
+## Installation
+
+Clone the repo once, then make whichever skill folders you want available to Codex or Claude Code.
+
+```bash
+git clone https://github.com/onvoyage-ai/gtm-engineer-skills.git
+cd gtm-engineer-skills
+```
+
+Each skill lives in its own folder and uses a `SKILL.md` file, which matches the shared agent-skills pattern used across both tools.
+
+### Codex
+
+Symlink or copy the desired skill folders into `~/.codex/skills/` (or `$CODEX_HOME/skills/` if you use a custom Codex home).
+
+```bash
+mkdir -p ~/.codex/skills
+ln -s "$PWD/research-brand" ~/.codex/skills/research-brand
+ln -s "$PWD/reddit-opportunity-research" ~/.codex/skills/reddit-opportunity-research
+```
+
+### Claude Code
+
+Symlink or copy the desired skill folders into `~/.claude/skills/` or a project-local `.claude/skills/` directory.
+
+```bash
+mkdir -p ~/.claude/skills
+ln -s "$PWD/research-brand" ~/.claude/skills/research-brand
+ln -s "$PWD/reddit-opportunity-research" ~/.claude/skills/reddit-opportunity-research
+```
+
 ## Platform Note
 
-The `reddit-opportunity-research` skill is Codex-oriented in this repo. ChatGPT already has native Reddit access in its product experience, and Claude generally does not expose the same Reddit access pattern, so this workflow is documented here for Codex use.
+The `reddit-opportunity-research` workflow is useful in either tool, but the exact Reddit access experience differs by product. ChatGPT already has native Reddit access in-product; Claude generally does not, so keep that in mind when comparing outputs.
 
 ---
 
@@ -82,101 +113,61 @@ The `reddit-opportunity-research` skill is Codex-oriented in this repo. ChatGPT 
 
 Researches a company from its URL and produces a Brand DNA file covering positioning, audience, competitors, voice, and messaging.
 
-```bash
-mkdir -p ~/.claude/skills/research-brand
-curl -o ~/.claude/skills/research-brand/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-brand/skill.md
-```
+Folder: `research-brand/`
 
 ### [Research SEO/GEO Keywords](research-keywords/)
 
 Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush.
 
-```bash
-mkdir -p ~/.claude/skills/research-keywords
-curl -o ~/.claude/skills/research-keywords/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-keywords/skill.md
-```
+Folder: `research-keywords/`
 
 ### [Reddit Opportunity Research](reddit-opportunity-research/)
 
 Finds Reddit pain-point discussions, target subreddits, and search-language patterns based on Brand DNA. Produces a ranked opportunity list for helpful promotion, content seeding, and prompt research.
 
-```bash
-mkdir -p ~/.claude/skills/reddit-opportunity-research
-curl -o ~/.claude/skills/reddit-opportunity-research/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/reddit-opportunity-research/skill.md
-```
+Folder: `reddit-opportunity-research/`
 
 ### [GEO Content Research](geo-content-research/)
 
 Researches what prompts people ask AI engines about a product category. Produces a GEO prompt target table with business-value tiers (Buy/Solve/Learn).
 
-```bash
-mkdir -p ~/.claude/skills/geo-content-research
-curl -o ~/.claude/skills/geo-content-research/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/geo-content-research/skill.md
-```
+Folder: `geo-content-research/`
 
 ### [GEO Content Planning](geo-content-planning/)
 
 Reads brand DNA, keyword research, and GEO prompt targets, then produces a content architecture — what pages to create, their types, URLs, and priority.
 
-```bash
-mkdir -p ~/.claude/skills/geo-content-planning
-curl -o ~/.claude/skills/geo-content-planning/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/geo-content-planning/skill.md
-```
+Folder: `geo-content-planning/`
 
 ### [Write SEO + GEO Content](write-seo-geo-content/)
 
 Writes product-led content pages optimized for search engines and AI engine citations. Research-first methodology with page-type frameworks and no fabricated stats.
 
-```bash
-mkdir -p ~/.claude/skills/write-seo-geo-content
-curl -o ~/.claude/skills/write-seo-geo-content/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/write-seo-geo-content/skill.md
-```
+Folder: `write-seo-geo-content/`
 
 ### [Create GEO/SEO Charts](create-geo-charts/)
 
 Creates data visualizations that AI engines can parse, quote, and cite. Every chart includes a text summary, HTML data table, and JSON-LD.
 
-```bash
-mkdir -p ~/.claude/skills/create-geo-charts
-curl -o ~/.claude/skills/create-geo-charts/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/create-geo-charts/skill.md
-```
+Folder: `create-geo-charts/`
 
 ### [Audit Content](audit-content/)
 
 Verifies truthfulness, accuracy, and link integrity of content before publishing. Catches fabricated statistics, dead URLs, and misattributed sources.
 
-```bash
-mkdir -p ~/.claude/skills/audit-content
-curl -o ~/.claude/skills/audit-content/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/audit-content/skill.md
-```
+Folder: `audit-content/`
 
 ### [Build Resource Pages](build-resource-pages/)
 
 Takes existing content markdown files and builds production-ready resource center pages on client websites using their existing tech stack and design system.
 
-```bash
-mkdir -p ~/.claude/skills/build-resource-pages
-curl -o ~/.claude/skills/build-resource-pages/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/build-resource-pages/skill.md
-```
+Folder: `build-resource-pages/`
 
 ### [Improve Website AEO/GEO](improve-aeo-geo/)
 
 Audits a website codebase and makes code changes so AI engines can better discover, parse, quote, and cite the site.
 
-```bash
-mkdir -p ~/.claude/skills/improve-aeo-geo
-curl -o ~/.claude/skills/improve-aeo-geo/skill.md \
-  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/improve-aeo-geo/skill.md
-```
+Folder: `improve-aeo-geo/`
 
 **Check your score first**: [aeo-audit.sh](https://aeo-audit.sh/)
 
