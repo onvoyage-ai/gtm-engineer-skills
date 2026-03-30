@@ -6,13 +6,14 @@ Skills for go-to-market engineering. Use them on real customers, improve them ba
 
 1. **`research-brand`** — URL → `brand_dna.md`
 2. **`research-keywords`** — SEO keywords (1-3 words), validated with Ahrefs/Semrush
-3. **`geo-content-research`** — GEO prompt targets (Buy/Solve/Learn) for AI citations
-4. **`write-seo-geo-content`** — Product-led SEO and GEO content pages
-5. **`build-resource-pages`** — Build frontend resource pages from existing content
-6. **`audit-content`** — Verify URLs, statistics, citations, and company claims before publishing
-7. **`create-geo-charts`** — Data visualizations with AI-readable text layers
-8. **`improve-aeo-geo`** — Website AEO/GEO audit and fixes
-9. **`build-backlinks`** — Find free backlink/mention opportunities across HN, Quora, GitHub, directories. Outputs actionable plan with ready-to-post drafts
+3. **`reddit-opportunity-research`** — Reddit pain points, target subreddits, and promotable discussion opportunities from Brand DNA
+4. **`geo-content-research`** — GEO prompt targets (Buy/Solve/Learn) for AI citations
+5. **`write-seo-geo-content`** — Product-led SEO and GEO content pages
+6. **`build-resource-pages`** — Build frontend resource pages from existing content
+7. **`audit-content`** — Verify URLs, statistics, citations, and company claims before publishing
+8. **`create-geo-charts`** — Data visualizations with AI-readable text layers
+9. **`improve-aeo-geo`** — Website AEO/GEO audit and fixes
+10. **`build-backlinks`** — Find free backlink/mention opportunities across HN, Quora, GitHub, directories. Outputs actionable plan with ready-to-post drafts
 
 ## `workspace/` Directory
 
@@ -31,8 +32,13 @@ Gitignored. Customer work goes here: `workspace/<customer-name>/`. Store `brand_
 
 - SEO keywords: 1-3 words. Longer phrases are blog topics.
 - GEO prompts: full questions (5-15+ words). Not SEO keywords.
+- Reddit opportunity output: ranked subreddit + thread patterns, not generic channel advice.
 - No fabricated data — every stat needs a source.
 - Skills improve by doing real customer work, not theorizing.
+
+## Platform Note
+
+- `reddit-opportunity-research` is intended for Codex workflows in this repo. ChatGPT already has native Reddit access in-product; Claude generally does not.
 
 ## Research Sources
 

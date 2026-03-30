@@ -1,6 +1,6 @@
 # GTM Engineer Skills
 
-A collection of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
+A collection of Codex/Claude Code style skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation.
 
 <p align="center">
   <img src="assets/logo.svg" alt="GTM Engineer Skills" width="200" />
@@ -18,19 +18,18 @@ Skills are designed to run in sequence. Each step produces files that feed into 
               │       URL → brand_dna     │
               └─────────────┬─────────────┘
                             │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-┌───────────────────────┐   ┌───────────────────────┐
-│   research-keywords   │   │ geo-content-research  │
-│  → keyword_research   │   │ → geo_prompt_targets  │
-└───────────┬───────────┘   └───────────┬───────────┘
-            │                           │
-            └─────────────┬─────────────┘
-                          ▼
-              ┌───────────────────────────┐
-              │   geo-content-planning    │
-              │  → content_architecture   │
-              └─────────────┬─────────────┘
+      ┌─────────────────────┼──────────────────────┐
+      ▼                     ▼                      ▼
+┌───────────────────────┐ ┌──────────────────────────────┐ ┌───────────────────────┐
+│   research-keywords   │ │ reddit-opportunity-research │ │  geo-content-research │
+│  → keyword_research   │ │ → reddit_opportunities      │ │ → geo_prompt_targets  │
+└───────────┬───────────┘ └──────────────┬───────────────┘ └───────────┬───────────┘
+            └──────────────┬─────────────┴──────────────┬──────────────┘
+                           ▼                            ▼
+              ┌───────────────────────────┐   ┌───────────────────────┐
+              │   geo-content-planning    │   │    build-backlinks    │
+              │  → content_architecture   │   │   → backlink_plan     │
+              └─────────────┬─────────────┘   └───────────────────────┘
                             │
               ┌─────────────┴─────────────┐
               ▼                           ▼
@@ -60,15 +59,20 @@ Skills are designed to run in sequence. Each step produces files that feed into 
 |------|-------|-------|--------|
 | 1 | **`research-brand`** | Company URL | `brand_dna.md` — positioning, audience, competitors, voice |
 | 2a | **`research-keywords`** | Brand DNA + product category | `keyword_research.md` — prioritized keywords by intent |
-| 2b | **`geo-content-research`** | Brand DNA + product category | `geo_prompt_targets.md` — AI prompts by business-value tier |
-| 3 | **`geo-content-planning`** | Brand DNA + keywords + GEO prompts | `content_architecture.md` — page plan with types, URLs, priority |
+| 2b | **`reddit-opportunity-research`** | Brand DNA + optional keyword/GEO files | `reddit_opportunities.md` — ranked subreddit and thread opportunities |
+| 2c | **`geo-content-research`** | Brand DNA + product category | `geo_prompt_targets.md` — AI prompts by business-value tier |
+| 3 | **`geo-content-planning`** | Brand DNA + keywords + GEO prompts + Reddit signals | `content_architecture.md` — page plan with types, URLs, priority |
 | 4a | **`write-seo-geo-content`** | Content architecture + research | Markdown articles with frontmatter |
 | 4b | **`create-geo-charts`** | Data from articles | SVG charts + HTML tables + JSON-LD |
 | 5 | **`audit-content`** | Articles + Brand DNA | Audit reports — verified URLs, stats, claims |
 | 6a | **`build-resource-pages`** | Audited content + client codebase | Frontend resource center pages |
 | 6b | **`improve-aeo-geo`** | Client website codebase | Code fixes for AI discoverability |
 
-Steps marked **a/b** can run in parallel.
+Steps marked **a/b/c** can run in parallel.
+
+## Platform Note
+
+The `reddit-opportunity-research` skill is Codex-oriented in this repo. ChatGPT already has native Reddit access in its product experience, and Claude generally does not expose the same Reddit access pattern, so this workflow is documented here for Codex use.
 
 ---
 
@@ -92,6 +96,16 @@ Finds high-value SEO and GEO keywords using web search, AI analysis, and optiona
 mkdir -p ~/.claude/skills/research-keywords
 curl -o ~/.claude/skills/research-keywords/skill.md \
   https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/research-keywords/skill.md
+```
+
+### [Reddit Opportunity Research](reddit-opportunity-research/)
+
+Finds Reddit pain-point discussions, target subreddits, and search-language patterns based on Brand DNA. Produces a ranked opportunity list for helpful promotion, content seeding, and prompt research.
+
+```bash
+mkdir -p ~/.claude/skills/reddit-opportunity-research
+curl -o ~/.claude/skills/reddit-opportunity-research/skill.md \
+  https://raw.githubusercontent.com/onvoyage-ai/gtm-engineer-skills/main/reddit-opportunity-research/skill.md
 ```
 
 ### [GEO Content Research](geo-content-research/)
