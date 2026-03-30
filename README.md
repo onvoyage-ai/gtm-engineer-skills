@@ -13,44 +13,48 @@ A collection of agent skills for go-to-market engineering — research, content,
 Skills are designed to run in sequence. Each step produces files that feed into the next.
 
 ```
-              ┌───────────────────────────┐
-              │       research-brand      │
-              │       URL → brand_dna     │
-              └─────────────┬─────────────┘
-                            │
-      ┌─────────────────────┼──────────────────────┐
-      ▼                     ▼                      ▼
-┌───────────────────────┐ ┌──────────────────────────────┐ ┌───────────────────────┐
-│   research-keywords   │ │ reddit-opportunity-research │ │  geo-content-research │
-│  → keyword_research   │ │ → reddit_opportunities      │ │ → geo_prompt_targets  │
-└───────────┬───────────┘ └──────────────┬───────────────┘ └───────────┬───────────┘
-            └──────────────┬─────────────┴──────────────┬──────────────┘
-                           ▼                            ▼
-              ┌───────────────────────────┐   ┌───────────────────────┐
-              │   geo-content-planning    │   │    build-backlinks    │
-              │  → content_architecture   │   │   → backlink_plan     │
-              └─────────────┬─────────────┘   └───────────────────────┘
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-┌───────────────────────┐   ┌───────────────────────┐
-│ write-seo-geo-content │   │  create-geo-charts    │
-│  → markdown articles  │   │  → SVG + data tables  │
-└───────────┬───────────┘   └───────────┬───────────┘
-            │                           │
-            └─────────────┬─────────────┘
-                          ▼
-              ┌───────────────────────────┐
-              │      audit-content        │
-              │      verify sources       │
-              └─────────────┬─────────────┘
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-┌───────────────────────┐   ┌───────────────────────┐
-│ build-resource-pages  │   │   improve-aeo-geo     │
-│  content → frontend   │   │  website code fixes   │
-└───────────────────────┘   └───────────────────────┘
+                          ┌───────────────────────────┐
+                          │       research-brand      │
+                          │       URL → brand_dna     │
+                          └─────────────┬─────────────┘
+                                        │
+            ┌───────────────────────────┼───────────────────────────┐
+            │                           │                           │
+            ▼                           ▼                           ▼
+┌───────────────────────┐   ┌───────────────────────────┐   ┌───────────────────────┐
+│   research-keywords   │   │ reddit-opportunity-       │   │  geo-content-research │
+│  → keyword_research   │   │ research                  │   │ → geo_prompt_targets  │
+│                       │   │ → reddit_opportunities    │   │                       │
+└─────────────┬─────────┘   └─────────────┬─────────────┘   └─────────────┬─────────┘
+              └───────────────┬───────────┴───────────┬───────────────────┘
+                              │                       │
+                              ▼                       ▼
+               ┌───────────────────────────┐   ┌───────────────────────┐
+               │   geo-content-planning    │   │    build-backlinks    │
+               │  → content_architecture   │   │   → backlink_plan     │
+               └─────────────┬─────────────┘   └───────────────────────┘
+                             │
+                ┌────────────┴────────────┐
+                │                         │
+                ▼                         ▼
+┌───────────────────────────┐   ┌───────────────────────────┐
+│  write-seo-geo-content    │   │     create-geo-charts     │
+│  → markdown articles      │   │   → SVG + data tables     │
+└─────────────┬─────────────┘   └─────────────┬─────────────┘
+              └───────────────┬───────────────┘
+                              ▼
+               ┌───────────────────────────┐
+               │      audit-content        │
+               │      verify sources       │
+               └─────────────┬─────────────┘
+                             │
+                ┌────────────┴────────────┐
+                │                         │
+                ▼                         ▼
+┌───────────────────────────┐   ┌───────────────────────────┐
+│   build-resource-pages    │   │      improve-aeo-geo      │
+│    content → frontend     │   │    website code fixes     │
+└───────────────────────────┘   └───────────────────────────┘
 ```
 
 ### Step by step
