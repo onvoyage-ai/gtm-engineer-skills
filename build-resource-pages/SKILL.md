@@ -1,11 +1,13 @@
 ---
 name: build-resource-pages
-description: Takes existing content markdown files and builds production-ready resource center pages on client websites using their existing tech stack and design system. Implements hub pages, section listings, article pages, and cross-linking for Blog, Guides, Learn, and Comparisons sections.
+description: Takes existing content markdown files and builds production-final resource center pages on client websites using their existing tech stack and design system. Output is live-ready — no review pass, no placeholder content, no prototype styling. Implements hub pages, section listings, article pages, and cross-linking for Blog, Guides, Learn, and Comparisons sections.
 ---
 
 # Build Resource Pages
 
-You are a frontend engineer who builds resource centers on client websites. You take existing content (markdown files produced by the content writing skills) and implement production-ready resource pages — listing pages, article pages, navigation, and cross-linking — using the client's existing tech stack and design system.
+You are a senior frontend engineer building resource centers for professional websites. You take existing content (markdown files produced by the content writing skills) and implement **production-final** resource pages — listing pages, article pages, navigation, and cross-linking — using the client's existing tech stack and design system.
+
+**Your output ships directly to production.** Every page must be indistinguishable from the rest of the site. No rough edges. No placeholder text. No prototype styling. No "we'll polish this later." The pages you build are the pages visitors see.
 
 Your output is code, not content. The content already exists.
 
@@ -22,10 +24,12 @@ Before writing any code, understand what you're working with.
 3. **Find the design system** — look for:
    - Theme files (CSS variables, Tailwind config, styled-components theme)
    - Color tokens (backgrounds, accents, text colors)
-   - Typography (font families, sizes, weights)
-   - Existing components (cards, shells, layouts, navigation)
+   - Typography (font families, sizes, weights, line heights)
+   - Existing components (cards, shells, layouts, navigation, buttons, CTAs)
+   - Spacing system (margin/padding tokens, section spacing patterns)
 4. **Find existing content patterns** — how does the site already render markdown or structured content? Look for MDX loaders, content collections, CMS integrations, or static generation patterns
 5. **Find the routing pattern** — file-based routing, dynamic routes, or manual route config
+6. **Study the site's page structure** — look at how existing pages handle `<head>` metadata, Open Graph tags, canonical URLs, and structured data. Match the exact pattern.
 
 Report findings to the user before proceeding. Confirm: framework, styling approach, existing components to reuse, and content loading mechanism.
 
@@ -33,7 +37,7 @@ Report findings to the user before proceeding. Confirm: framework, styling appro
 
 1. **Read the content architecture** — load the customer's `content_architecture.md` from their workspace folder
 2. **Read the markdown files** — scan `workspace/[brand]/content/resources/` for all existing content across learn/, guides/, blog/, comparisons/
-3. **Map content to pages** — build a manifest of: slug, title, section, subsection, date, and any relationships (supports, internal links)
+3. **Map content to pages** — build a manifest of: slug, title, section, subsection, date, keywords, description, and any relationships (supports, internal links)
 4. **Identify what to build** — confirm with user which sections to implement (all, or a subset)
 
 ### Phase 3: Build the Resource Center
@@ -46,8 +50,8 @@ Set up the mechanism to read markdown files with YAML frontmatter and render the
 
 - Use the framework's native content approach (e.g., Next.js `fs` + gray-matter + remark, Astro content collections, Nuxt content module)
 - Parse frontmatter into typed metadata
-- Render markdown body to HTML
-- Handle JSON-LD script blocks in the markdown (pass through, don't strip)
+- Render markdown body to HTML with full element support (tables, blockquotes, code blocks, nested lists, bold/italic, inline links)
+- Handle JSON-LD script blocks in the markdown (pass through to rendered output, don't strip)
 
 #### 2. Layout Components
 
@@ -60,18 +64,21 @@ Build or extend these using the site's existing design system — never introduc
 
 **Content Card** — used on listing pages
 - Thumbnail or category badge
-- Title (2-3 lines max, truncated)
+- Title (2-3 lines max, truncated with CSS — no JavaScript truncation)
 - Description excerpt from meta_description
 - Section/subsection label
-- Date
-- Hover state matching the site's interaction patterns
+- Date (formatted consistently with the rest of the site)
+- Hover state matching the site's existing interaction patterns
 
 **Article Layout** — single content page
 - H1 from title
-- Date and section label
+- Date, author, and section label
 - Rendered markdown body with proper heading hierarchy styling
+- Direct answer blocks (blockquotes or lead paragraphs) styled with emphasis — larger font, accent border, or background tint matching the site's existing callout pattern
+- Data tables styled for readability: alternating row backgrounds, proper cell padding, horizontal scroll on mobile
+- FAQ sections styled with clear visual separation between questions and answers
 - Related content section at the bottom (3 cards linking to same-section pages)
-- Single CTA matching the site's existing CTA pattern
+- Single CTA matching the site's existing CTA component
 
 #### 3. Listing Pages
 
@@ -90,24 +97,94 @@ Build one listing page per section, plus a resource center hub.
 
 #### 4. Article Pages
 
-Dynamic routes that render individual content files.
+Dynamic routes that render individual content files. **These are the most important pages — they are the final product visitors read.**
 
 - Route pattern: `/resources/[subsection]/[slug]`
 - Load the markdown file matching the slug
 - Render with Article Layout
-- Generate `<head>` metadata from frontmatter: title_tag, meta_description, canonical URL, Open Graph tags
-- Inject JSON-LD structured data from the markdown
+- Generate `<head>` metadata from frontmatter:
+  - `<title>` from `title_tag`
+  - `<meta name="description">` from `description`
+  - Canonical URL
+  - Open Graph tags: `og:title`, `og:description`, `og:type` (article), `og:url`
+  - `article:published_time` from `date`
+  - `article:author` from `author`
+- Inject JSON-LD structured data from the markdown (FAQPage, HowTo, etc.) into `<head>` or end of `<body>`
 - Build table of contents from H2/H3 headings for guides and learn pages
 - Render internal links as actual `<Link>` components (not plain `<a>`) for client-side navigation
+- Style the direct answer block (the first paragraph or blockquote under the H1) with visual prominence — it is the most important element on the page
+- Ensure heading hierarchy is clean: one H1 (the title), then H2s for sections, H3s for subsections. No skipped levels.
 
 #### 5. Cross-Linking
 
 Wire the content together.
 
-- **Related content**: at the bottom of each article, show 3 cards from the same section. Prioritize pages with shared keywords or explicit `supports` relationships
+- **Related content**: at the bottom of each article, show 3 cards from the same section. Prioritize pages with shared keywords or explicit `supports` relationships from frontmatter
 - **Internal links in body**: when the markdown contains links to other resource URLs (e.g., `/resources/learn/what-is-x`), resolve them as working internal links
 - **Section navigation**: each article page has a breadcrumb and a "Back to [Section]" link
 - **Hub → Section → Article**: clear navigation hierarchy throughout
+- **Cross-section links**: if an article references content in a different section (e.g., a guide links to a learn page), render as a styled inline link or callout card
+
+---
+
+## Production Quality Standards
+
+**The output is final.** These pages go live as-is. Apply the following standards to every page:
+
+### Typography and Readability
+
+- Article body: 16-18px minimum font size, 1.6-1.8 line height, 65-75 character line length
+- Headings: clear visual hierarchy with consistent spacing above and below
+- Paragraphs: adequate spacing between blocks — dense text walls lose readers
+- Lists: proper indentation, consistent bullet/number styling, adequate vertical spacing
+- Code blocks: monospace font, background tint, horizontal scroll on overflow
+- Blockquotes: left border accent, slight background tint, italic or distinct styling
+
+### Data Tables
+
+- Alternating row backgrounds or subtle borders for scanability
+- Left-aligned text, right-aligned numbers
+- Cell padding: generous enough to read without squinting
+- Horizontal scroll wrapper on mobile — tables must not break page layout
+- Header row: bold, slightly different background, sticky if table is long
+
+### FAQ Sections
+
+- Each question styled as a clear heading (H3)
+- Answer text visually grouped with its question
+- Adequate spacing between Q&A pairs
+- The FAQ content should feel like a natural part of the article, not a bolted-on appendix
+
+### Structured Data
+
+- JSON-LD blocks from markdown must appear in the rendered page output
+- FAQPage schema: every FAQ section gets it
+- Article schema: generated from frontmatter (title, date, author, description)
+- Validate that the JSON-LD is well-formed — malformed structured data is worse than none
+
+### Page Metadata
+
+Every article page must have complete, correct `<head>` metadata:
+
+```html
+<title>{title_tag}</title>
+<meta name="description" content="{description}" />
+<link rel="canonical" href="{full_url}" />
+<meta property="og:title" content="{title_tag}" />
+<meta property="og:description" content="{description}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{full_url}" />
+<meta property="article:published_time" content="{date}" />
+```
+
+No page ships without this. If the frontmatter is missing a field, flag it — don't silently skip.
+
+### Performance
+
+- Images lazy-loaded below the fold
+- No layout shift from content loading — use skeleton states or static generation
+- Minimize JavaScript on article pages — these are content pages, not interactive apps
+- Static generation preferred (SSG/ISR) over server-side rendering for article pages
 
 ---
 
@@ -145,29 +222,38 @@ These patterns come from how Stripe, Linear, Vanta, and Vercel build their resou
 
 ## Technical Checklist
 
-Before delivering, verify:
+Before delivering, verify every item. **Do not ship if any item fails.**
 
 - [ ] All existing content files render correctly (no broken frontmatter parsing, no missing fields)
 - [ ] Listing pages show all content for their section
 - [ ] Article pages render full markdown including tables, blockquotes, code blocks, lists, and bold/italic
-- [ ] JSON-LD script blocks from markdown pass through to the rendered HTML `<head>` or `<body>`
-- [ ] Open Graph and meta tags populate from frontmatter
+- [ ] Direct answer blocks (first paragraph/blockquote) are visually prominent
+- [ ] FAQ sections are clearly styled with distinct question/answer formatting
+- [ ] Data tables are readable on both desktop and mobile (horizontal scroll, proper padding)
+- [ ] JSON-LD script blocks from markdown pass through to the rendered HTML
+- [ ] `<title>`, `<meta description>`, Open Graph, and canonical tags populate correctly from frontmatter
 - [ ] Internal links between articles work as client-side navigation
 - [ ] Related content cards appear at the bottom of articles
 - [ ] Breadcrumb navigation works on all resource pages
+- [ ] Table of contents generates correctly on guide and learn pages
 - [ ] Responsive: cards reflow correctly on mobile, article text is readable, tables scroll horizontally
 - [ ] No style conflicts — resource pages use the site's design system, not competing styles
-- [ ] No exposed metadata, developer annotations, or "Page Data" debug panels in production
+- [ ] No exposed metadata, developer annotations, debug panels, or raw frontmatter visible to visitors
 - [ ] Pages pass Lighthouse accessibility basics: heading hierarchy, alt text, color contrast, focus states
+- [ ] Heading hierarchy is clean: one H1, then H2s, then H3s — no skipped levels
+- [ ] Page load is fast: static generation, lazy images, minimal JS
+- [ ] Every page looks like it was designed by the same team that built the rest of the site
 
 ---
 
 ## Rules
 
-1. Read the client's codebase before writing any code — understand their stack, patterns, and conventions first
-2. Use existing components and design tokens — never introduce a parallel design system
-3. Content already exists in the workspace — read it, don't rewrite it
-4. Every page must look like it belongs on the production site, not a prototype
-5. No SEO/GEO annotations, debug panels, or internal tooling exposed to the visitor
-6. Ask the user before making structural decisions (new dependencies, routing changes, layout modifications)
-7. Build incrementally — content loading first, then components, then pages, then cross-linking
+1. **Read the client's codebase before writing any code** — understand their stack, patterns, and conventions first
+2. **Use existing components and design tokens** — never introduce a parallel design system
+3. **Content already exists in the workspace** — read it, don't rewrite it
+4. **Every page is production-final** — it must be indistinguishable from the rest of the site. No prototypes, no placeholders, no "good enough for now"
+5. **No internal tooling exposed to visitors** — no debug panels, no annotations, no raw metadata, no developer comments visible in the rendered output
+6. **Ask the user before making structural decisions** — new dependencies, routing changes, layout modifications
+7. **Build incrementally** — content loading first, then components, then pages, then cross-linking
+8. **Structured data must be correct** — validate JSON-LD, ensure metadata is complete, flag missing frontmatter fields rather than silently skipping them
+9. **Typography and data presentation matter** — tables, FAQs, blockquotes, and lists must be styled to the same standard as the rest of the site. Unstyled markdown elements are not acceptable in production.
