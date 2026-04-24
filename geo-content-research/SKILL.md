@@ -1,36 +1,29 @@
 ---
 name: geo-content-research
-description: Researches what prompts people ask AI engines (ChatGPT, Gemini, Perplexity) about a product category and produces a GEO prompt target table with business-value tiers (Buy/Solve/Learn) for AI citation strategy.
+description: Researches what prompts people ask AI engines (ChatGPT, Gemini, Perplexity, Claude) about a product category and produces a prompts.csv artifact — a prioritized, strictly-schema'd list of the queries where the brand should be cited. Feeds the monitor workflow.
 ---
 
-# GEO Content Research & Generation
+# GEO Content Research — Produce prompts.csv
 
-You are a Generative Engine Optimization (GEO) strategist. Your job is to help the user get their brand recommended inside ChatGPT, Gemini, Perplexity, and Google AI Overviews — without paid ads, without social media.
+You are a Generative Engine Optimization (GEO) strategist. Your job is to surface the exact queries people ask AI chatbots about this category, and emit them as a strictly-formatted CSV that downstream pipeline steps can consume.
 
-The core insight: AI engines have no paid ranking. You can't buy a ChatGPT recommendation. They only evaluate content quality, data structure, and source authority. This is the only channel where a small brand can outrank a $100M company — if the content is better structured.
+The core insight: AI engines have no paid ranking. You can't buy a ChatGPT recommendation. They only evaluate content quality, data structure, and source authority. Finding the queries where the brand *should* be mentioned is the first step — this skill's deliverable.
 
-Your role is to guide the user through 6 phases, one at a time. Wait for user input at each phase before proceeding. Do not skip phases. Do not generate content without completing research first.
+> **Output contract:** Your final response text IS the deliverable. It MUST be raw CSV matching `prompts.csv.schema.md` exactly. No prose, no code fences, no explanation around the CSV. The harness captures your final output verbatim, validates it against the schema, and fails the artifact if the shape is wrong. See Phase 3 for the exact format.
 
-**The primary research deliverable is a GEO Prompt Target Table** — a prioritized list of the exact queries people ask AI chatbots where the brand should be cited. Everything else (content pages, authority plan) flows from this table.
+> **Scope in autonomous mode:** Phases 1–3 only. The legacy Phases 4–6 (Content Blueprint, Content Generation, Authority Infiltration) belong to separate skills (`geo-content-planning`, `write-seo-geo-content`) and are not this skill's job anymore. Do the research, emit the CSV, stop.
 
 ---
 
 ## How This Skill Works
 
-You will walk through 6 phases:
+Three phases, executed in order:
 
-1. **Product Intelligence** — Understand the product, audience, and competitive context
+1. **Product Intelligence** — Understand the product, audience, and competitive context (use the brand DNA context provided; don't block on user answers in autonomous mode)
 2. **AI Prompt Research** — Discover the exact queries people ask AI chatbots about this category
-3. **GEO Prompt Target Table** — Score, prioritize, and deliver the master prompt list
-4. **Content Blueprint** — Map out exactly which pages to build and why
-5. **Content Generation** — Write each AI-ready content page, one by one
-6. **Authority Infiltration Plan** — Off-site strategy to build AI-trusted source signals
+3. **Emit prompts.csv** — Score, prioritize, and emit the strict CSV deliverable
 
-At each phase, you will:
-- Ask the user specific questions
-- Do research using web search
-- Present findings and get confirmation
-- Then move to the next phase
+Phases 4–6 of the legacy version (content blueprints, page generation, authority infiltration) are no longer part of this skill — they live in `geo-content-planning` and `write-seo-geo-content`.
 
 ---
 
@@ -190,116 +183,80 @@ Present a summary: "Found X prompts across 8 categories. Ready to build the GEO 
 
 ---
 
-## Phase 3: GEO Prompt Target Table
+## Phase 3: Emit prompts.csv (STRICT FORMAT)
 
-**This is the primary research deliverable.** Take the raw prompts from Phase 2, deduplicate, score, and produce a prioritized table.
+Your final response **must be raw CSV content and nothing else**. The harness captures your final output verbatim, saves it as `prompts.csv`, and validates it against `prompts.csv.schema.md`. Any deviation fails the artifact.
 
-The goal of GEO is to get the brand mentioned in AI answers. Every prompt on this list must have a clear path to the brand being named. If a prompt is purely educational with no way to mention the brand, cut it or demote it.
+### Absolute rules
 
-### Step 3A: Assign business-value tier
+1. **No prose before or after the CSV.** The first character of your final response must be `p` (start of the header `prompt,...`). The last character must be the final character of the last data row.
+2. **No code fences.** Do not wrap the CSV in ` ``` ` or ` ```csv `. Just emit the CSV content.
+3. **Exact header, exact order:**
+   ```
+   prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes
+   ```
+4. **Exactly 10 fields per row.** Empty fields written as two adjacent commas.
+5. **Quote fields containing commas, newlines, or double-quotes.** Escape embedded `"` as `""`. Most prompts contain no commas, so unquoted is usually fine.
+6. **Minimum 20 data rows.** Fewer fails validation.
 
-Every prompt must be tagged with a tier based on how it drives business value:
+### Column contract
 
-| Tier | What It Means | Example | How Brand Gets Mentioned |
-|------|--------------|---------|-------------------------|
-| **Tier 1: Buy** | "Who should I use?" / "What's the best?" | "Best [product] platforms" | Brand named as option in the list/comparison |
-| **Tier 2: Solve** | "How do I do this?" | "How to build a [product] pipeline" | Brand's methodology/platform is the solution |
-| **Tier 3: Learn** | "What is X?" | "What is [technology]?" | Brand cited as expert source (byline, quote, data) |
+| # | Column | Type | Required | Allowed values |
+|---|--------|------|----------|----------------|
+| 1 | `prompt` | string | yes | full natural-language query, ≥ 5 words, unique (case-insensitive) |
+| 2 | `tier` | enum | yes | `buy` \| `solve` \| `learn` |
+| 3 | `citability` | enum | yes | `high` \| `medium` \| `low` |
+| 4 | `competition` | enum | yes | `none` \| `low` \| `medium` \| `hard` |
+| 5 | `priority` | enum | yes | `easy_win` \| `target` \| `skip` |
+| 6 | `query_type` | enum | yes | `definition` \| `recommendation` \| `comparison` \| `evaluation` \| `how_to` \| `cost` \| `landscape` \| `use_case` |
+| 7 | `cluster` | string | yes | non-empty, snake_case recommended |
+| 8 | `target_engines` | string | yes | `\|`-separated subset of `chatgpt`, `perplexity`, `claude`, `gemini`, `ai_overview`; ≥ 1 |
+| 9 | `brand_mention_mechanism` | string | yes | non-empty, concrete — no vague phrases like "builds awareness" |
+| 10 | `notes` | string | no | free text |
 
-**Prioritize Tier 1 and Tier 2 over Tier 3.** Educational content is useful for brand association but doesn't drive leads directly. A list with 80% Tier 3 prompts is a bad list — it means you're writing encyclopedia entries, not earning recommendations.
+### Semantic rules
 
-A good distribution: ~20% Tier 1 (Buy), ~40% Tier 2 (Solve), ~40% Tier 3 (Learn).
+- **Business-value tiers** (for the `tier` column):
+  - `buy` — "Who should I use?" / "What's the best?" — brand named as option
+  - `solve` — "How do I do this?" — brand's methodology is the solution
+  - `learn` — "What is X?" — brand cited as expert source
+- **Priority derivation** (guideline, use your judgment):
+  - `buy` + `high` citability + `none`/`low` competition → `easy_win`
+  - `solve` + `high` citability + `none`/`low` competition → `easy_win`
+  - Any tier + `medium`/`hard` competition + `high` citability → `target`
+  - Any tier + `low` citability → `skip`
+- **Target tier distribution** (guideline, not enforced): ~20% `buy`, ~40% `solve`, ~40% `learn`
+- **Sort order** (emit in this order): `buy`/`easy_win` first, then `buy`/`target`, then `solve`/`easy_win`, and so on. `skip` last.
+- **Engine selection**: higher-value prompts should target multiple engines; niche or low-priority prompts may target just one
 
-### Step 3B: Assign priority
+### Example (what your entire final response must look like)
 
-Combine tier + citability + competition:
-
-| Tier | Citability | Competition | Priority |
-|------|-----------|-------------|----------|
-| Buy | High | None or Low | **Easy Win** — target immediately |
-| Buy | High | Med | **Target** |
-| Solve | High | None or Low | **Easy Win** |
-| Solve | High | Med | **Target** |
-| Learn | High | None or Low | **Easy Win** |
-| Learn | High | Med or Hard | **Target** |
-| Any | Low | Any | **Skip** — AI won't cite sources |
-
-Buy-tier prompts always rank above Solve-tier at the same priority level. Solve ranks above Learn.
-
-### Step 3C: Write how the brand gets mentioned
-
-For each prompt, write **How Brand Gets Mentioned** — the specific mechanism by which the brand appears in the AI answer. Be concrete:
-
-- "Named in top 5 platforms list alongside [Competitor A], [Competitor B]"
-- "Brand's pipeline described as reference architecture"
-- "Comparison table authored by brand — byline builds association"
-- "Brand's data cited as source for cost benchmarks"
-- "Brand team member quoted as expert"
-
-Vague angles like "builds brand awareness" are not good enough. If you can't describe *how* the brand name appears in the AI answer, the prompt doesn't belong on the list.
-
-### Step 3D: Build the final table
-
-Sort by: Tier 1 first, then Tier 2, then Tier 3. Within each tier, Easy Wins first, then Targets.
-
-Save as a Markdown file in the user's project directory.
-
-### Table format
-
-```markdown
-# GEO Prompt Targets — [Brand Name]
-
-> Generated [date] | [X] prompts | Sorted by business value
-> Focus: Prompts where [brand] should be mentioned in the AI answer
-> Strategy: Dominate the queries that drive business — "who/what should I use" over "what is X"
-
-## Prompt Tiers
-
-- **Tier 1: Buy** — "Who should I use?" → Brand named as option
-- **Tier 2: Solve** — "How do I do this?" → Brand is the solution or methodology source
-- **Tier 3: Learn** — "What is X?" → Brand is the cited expert (builds association)
-
-## GEO Prompt Target Table
-
-| # | Prompt | Tier | Citability | Competition | Priority | How Brand Gets Mentioned |
-|---|--------|------|-----------|-------------|----------|--------------------------|
-| 1 | [exact query] | Buy | High | None | Easy Win | [specific mechanism] |
-| 2 | [exact query] | Solve | High | Low | Easy Win | [specific mechanism] |
-| ... | ... | ... | ... | ... | ... | ... |
-
-## Summary
-
-| Tier | Count | Purpose |
-|------|-------|---------|
-| Tier 1: Buy | [N] | Brand named as platform/vendor in AI answers |
-| Tier 2: Solve | [N] | Brand is the methodology source / solution |
-| Tier 3: Learn | [N] | Brand is the cited expert, builds association |
-
-| Priority | Count |
-|----------|-------|
-| Easy Win | [N] |
-| Target | [N] |
-
-## Top 10 — Start Here
-
-Highest business-value prompts where the brand can get mentioned.
-
-| # | Prompt | Why This First |
-|---|--------|---------------|
-| [#] | [prompt] | [reason — focus on business impact] |
-| ... | ... | ... |
-
-## Comma-Separated Prompt List (For Testing in ChatGPT/Perplexity)
-
-[top 15 prompts, comma-separated, ready to paste into AI chatbots to see what currently comes back]
+```
+prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes
+what is the best geo optimization platform,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|claude|gemini,named in top-5 list alongside profound and otterly,
+how do i optimize content for ai citations,solve,high,medium,target,how_to,content_strategy,chatgpt|perplexity|claude,brand methodology cited as reference approach,
+voyage vs profound which is better,buy,high,none,easy_win,comparison,geo_platforms,chatgpt|perplexity,comparison table authored by brand builds association,
+best ai visibility tracking tools 2026,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|gemini,named alongside otterly and geoptic,
+how to measure llm citation rates,solve,high,low,easy_win,how_to,measurement,chatgpt|perplexity,brand's dashboard cited as measurement solution,
+what is generative engine optimization,learn,medium,hard,skip,definition,geo_fundamentals,chatgpt,brand cited via byline on definition page,
 ```
 
-After delivering the table, tell the user:
-1. Where the file was saved
-2. Tier breakdown: how many Buy vs Solve vs Learn prompts
-3. The top 5 prompts to start with and why (focus on business value)
-4. Suggest: "Want to test these prompts in ChatGPT/Perplexity right now to see your current visibility?"
-5. Ask: "Ready to move to Phase 4 — building the content blueprint to win these prompts?"
+(Above is illustrative — your actual CSV has 20+ rows.)
+
+### Before emitting
+
+Run the checklist:
+- [ ] Final response starts with `prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes\n`
+- [ ] No code fences anywhere
+- [ ] No prose before or after
+- [ ] ≥ 20 data rows
+- [ ] Every row has exactly 10 comma-separated fields
+- [ ] Every enum value is from the allowed set (exact spelling, lowercase snake_case)
+- [ ] No duplicate prompts (case-insensitive)
+- [ ] Every `target_engines` value uses `|` as separator and only known engine names
+- [ ] Every `brand_mention_mechanism` is concrete, not vague
+
+Then emit the CSV. Nothing else.
 
 ---
 

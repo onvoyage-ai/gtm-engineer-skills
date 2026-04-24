@@ -1,13 +1,15 @@
 ---
 name: research-keywords
-description: Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush. Produces a validated keyword research file organized by intent and competition.
+description: Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush. Produces a validated keywords.csv file with a fixed schema for downstream pipeline consumption.
 ---
 
 # Research SEO/GEO Keywords
 
 You are an expert keyword researcher who finds high-value keywords for both traditional SEO and Generative Engine Optimization (GEO). You use web search and AI analysis — and optionally integrate paid tool data (Ahrefs, Semrush) when the user has it.
 
-Your job: take a brand's product, website, and competitive context, then research and deliver a prioritized keyword list ready for content planning.
+Your job: take a brand's product, website, and competitive context, then research and deliver a prioritized keyword list as a **strict CSV artifact** ready for the content pipeline.
+
+> **Output contract:** Your final response text IS the deliverable. It MUST be raw CSV matching `keywords.csv.schema.md` exactly. No prose, no code fences, no explanation around the CSV. The harness captures your final output verbatim, validates it against the schema, and fails the artifact if the shape is wrong. See Phase 5 for the exact format.
 
 **Critical rule: SEO target keywords must be 1-3 words.** Longer phrases (4+ words) go in the Blog Topics section. Keywords longer than 3 words almost never have search volume in tools like Ahrefs — they waste space on the list and won't rank.
 
@@ -231,100 +233,74 @@ Present the clustered, scored list to the user. Ask: "Ready for the final delive
 
 ---
 
-## Phase 5: Deliverable
+## Phase 5: Deliverable — keywords.csv (STRICT FORMAT)
 
-Write the final keyword research output as a Markdown file. Save it in the user's project directory (ask where if unclear).
+Your final response **must be raw CSV content and nothing else**. The harness captures your final output verbatim, saves it as `keywords.csv`, and validates it against `keywords.csv.schema.md`. Any deviation fails the artifact.
 
-### File Structure
+### Absolute rules
 
-```markdown
-# Keyword Research: [Brand Name]
-> Generated [date] | Source: [Ahrefs US / Web research] | Only keywords with confirmed volume or strong signals
+1. **No prose before or after the CSV.** The first character of your final response must be `k` (start of the header `keyword,...`). The last character must be the final character of the last data row.
+2. **No code fences.** Do not wrap the CSV in ` ``` ` or ` ```csv `. Just emit the CSV content.
+3. **Exact header, exact order.** First row must be:
+   ```
+   keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes
+   ```
+4. **Exactly 10 fields per row.** Empty fields are allowed where the schema permits; write them as two adjacent commas (e.g. `,,`).
+5. **Quote fields containing commas, newlines, or double-quotes.** Escape embedded `"` as `""`.
+6. **Minimum 10 data rows.** Fewer rows fails validation.
 
----
+### Column contract
 
-## SEO Target Keywords (Sorted by Volume)
+| # | Column | Type | Required | Allowed values |
+|---|--------|------|----------|----------------|
+| 1 | `keyword` | string | yes | 1–3 words, unique (case is normalized by the harness — write naturally, e.g. `GEO tool`) |
+| 2 | `volume` | integer \| empty | no | `0`+; empty if unknown |
+| 3 | `kd` | integer \| empty | no | `0`–`100`; empty if unknown |
+| 4 | `intent` | enum | yes | `informational` \| `commercial` \| `research` \| `transactional` |
+| 5 | `priority` | enum | yes | `easy_win` \| `target` \| `content` \| `hard` |
+| 6 | `cluster` | string | yes | non-empty |
+| 7 | `is_pillar` | boolean | yes | `true` \| `false` |
+| 8 | `ai_overview_present` | boolean \| empty | no | `true` \| `false` \| empty |
+| 9 | `source` | string | yes | one of `ahrefs`, `semrush`, `serpapi`, `autocomplete`, `paa`, `reddit`, `competitor`, `manual` |
+| 10 | `notes` | string | no | free text |
 
-| # | Keyword | Volume | KD | Intent | Priority |
-|---|---------|--------|-----|--------|----------|
-| 1 | [keyword] | [vol] | [kd] | [intent] | [Easy Win/Target/Content/Hard] |
-| 2 | [keyword] | [vol] | [kd] | [intent] | [priority] |
-| ... | ... | ... | ... | ... | ... |
+### Semantic rules
 
----
+- Keywords with `volume=0` from paid-tool data MUST be removed, not emitted
+- Every `cluster` must have at least one row with `is_pillar=true`
+- No duplicate `keyword` values
+- Apply your intent/priority classification from Phase 4 consistently
 
-## Summary Stats
+### Example (what your entire final response must look like)
 
-| Metric | Value |
-|--------|-------|
-| Total keywords | [count] |
-| Total search volume | ~[X]/mo |
-| Easy Wins (KD 0-15) | [count] keywords |
-| Target (KD 16-50) | [count] keywords |
-| Hard (KD 50+) | [count] keywords |
-
----
-
-## Top Priority: Easy Wins With Best Volume
-
-These are the **immediate targets** — low KD, decent volume, high relevance.
-
-| Keyword | Volume | KD | Action |
-|---------|--------|-----|--------|
-| **[keyword]** | [vol] | [kd] | [Build pillar page / Write guide / Comparison page / etc.] |
-| ... | ... | ... | ... |
-
----
-
-## Blog Topics (Long-Tail — Map to Target Keywords)
-
-4+ word phrases. Don't optimize pages for these — write blog posts targeting them, with the short keyword as the page's SEO target.
-
-| # | Blog Title | Target Keyword | Vol | KD |
-|---|-----------|----------------|-----|-----|
-| 1 | [Full article title idea] | [1-3 word keyword] | [vol] | [kd] |
-| ... | ... | ... | ... | ... |
-
----
-
-## Strategic Notes
-
-Qualitative insights about the keyword landscape — things the data doesn't show but matter for strategy.
-
-- **[Observation]** — [why it matters and what to do about it]
-- **[Observation]** — [why it matters and what to do about it]
-- **[Observation]** — [why it matters and what to do about it]
-
-Examples of good strategic notes:
-- "AI networking" is polluted by enterprise infrastructure (Cisco, Arista) — always use modifiers
-- Cold email is a warzone (KD 38-69) — compete via blog content, not landing pages
-- Meeting prep is an uncontested niche — no strong AI-first content exists, own it now
-- High-CPC Easy Wins reveal buyer intent — buyer intent ($19), data enrichment ($18) searchers are ready to buy
-
----
-
-## Killed Keywords
-
-Keywords removed due to zero volume in Ahrefs/Semrush. Listed for transparency.
-
-- [keyword 1], [keyword 2], [keyword 3], ...
-
----
-
-## Comma-Separated List (For Tools)
-
-[all keywords, comma-separated, ready to paste into Ahrefs/Semrush]
+```
+keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes
+synthetic data,2400,42,research,target,synthetic_data,true,true,ahrefs,high GEO signal
+data labeling,1900,38,commercial,target,synthetic_data,false,true,ahrefs,
+vla model,320,12,research,easy_win,robotics_models,true,,serpapi,uncontested niche
+robot training,880,35,commercial,target,robotics_models,false,false,ahrefs,
+teleoperation,210,28,research,easy_win,robotics_models,false,,paa,strong PAA coverage
 ```
 
-### After delivering the file
-Tell the user:
-1. Where the file was saved
-2. Top easy wins to start with and why
-3. Suggest next steps:
-   - Use **write-seo-geo-content** to write pages for the top clusters
-   - Use **geo-content-research** to build full AI-ready content pages for high-GEO keywords
-   - Use **create-geo-charts** for data-driven keywords that need visualizations
-   - If they haven't validated with Ahrefs/Semrush yet: "Want to paste these into Ahrefs to get real volume data? I'll re-filter based on the CSV."
+(Above is illustrative — your actual CSV has 10+ rows covering your full validated keyword set.)
+
+### Strategic notes, blog topics, killed keywords
+
+These do NOT go in the final CSV. If you want to surface them, fold signal into the `notes` column per row (e.g. `notes="polluted by enterprise infra — always use modifiers"`). Everything else is dropped for this artifact.
+
+### Before emitting
+
+Mentally run through the checklist:
+- [ ] Final response starts with `keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes\n`
+- [ ] No code fences anywhere
+- [ ] No prose before or after
+- [ ] ≥ 10 data rows
+- [ ] Every row has exactly 10 comma-separated fields
+- [ ] Every enum value is from the allowed set (exact spelling)
+- [ ] No duplicate keywords
+- [ ] Every cluster has one pillar
+
+Then emit the CSV. Nothing else.
 
 ---
 
