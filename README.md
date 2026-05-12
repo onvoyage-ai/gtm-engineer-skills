@@ -2,10 +2,6 @@
 
 A collection of agent skills for go-to-market engineering — research, content, SEO, GEO, and frontend implementation. The repo is meant to work for both Codex and Claude Code.
 
-<p align="center">
-  <img src="assets/logo.svg" alt="GTM Engineer Skills" width="200" />
-</p>
-
 ---
 
 ## Workflow
