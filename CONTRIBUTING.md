@@ -41,4 +41,5 @@ Add before/after examples to the `examples/` directory showing real improvements
 1. Fork the repo
 2. Create a branch (`git checkout -b add-angular-patterns`)
 3. Make your changes
-4. Submit a PR with a clear description of what you added and why
+4. **Test locally** — see [TESTING.md](TESTING.md) for how to run skills and validate output
+5. Submit a PR with a clear description of what you added and why
