@@ -49,18 +49,18 @@ flowchart TD
 
 ### Step by step
 
-| Step | Skill | Input | Output |
-|------|-------|-------|--------|
-| 1 | **`research-brand`** | Company URL | `brand_dna.md` — positioning, audience, competitors, voice |
-| 2a | **`research-keywords`** | Brand DNA + product category | `keyword_research.md` — prioritized keywords by intent |
-| 2b | **`reddit-opportunity-research`** | Brand DNA + optional keyword/GEO files | `reddit_opportunities.md` — ranked subreddit and thread opportunities |
-| 2c | **`geo-content-research`** | Brand DNA + product category | `geo_prompt_targets.md` — AI prompts by business-value tier |
-| 3 | **`geo-content-planning`** | Brand DNA + keywords + GEO prompts + Reddit signals | `content_architecture.md` — page plan with types, URLs, priority |
-| 4a | **`write-seo-geo-content`** | Content architecture + research | Markdown articles with frontmatter |
-| 4b | **`create-geo-charts`** | Data from articles | SVG charts + HTML tables + JSON-LD |
-| 5 | **`audit-content`** | Articles + Brand DNA | Audit reports — verified URLs, stats, claims |
-| 6a | **`build-resource-pages`** | Audited content + client codebase | Frontend resource center pages |
-| 6b | **`improve-aeo-geo`** | Client website codebase | Code fixes for AI discoverability |
+| Step | Skill                             | Input                                               | Output                                                                |
+| ---- | --------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+| 1    | **`research-brand`**              | Company URL                                         | `brand_dna.md` — positioning, audience, competitors, voice            |
+| 2a   | **`research-keywords`**           | Brand DNA + product category                        | `keyword_research.md` — prioritized keywords by intent                |
+| 2b   | **`reddit-opportunity-research`** | Brand DNA + optional keyword/GEO files              | `reddit_opportunities.md` — ranked subreddit and thread opportunities |
+| 2c   | **`geo-content-research`**        | Brand DNA + product category                        | `geo_prompt_targets.md` — AI prompts by business-value tier           |
+| 3    | **`geo-content-planning`**        | Brand DNA + keywords + GEO prompts + Reddit signals | `content_architecture.md` — page plan with types, URLs, priority      |
+| 4a   | **`write-seo-geo-content`**       | Content architecture + research                     | Markdown articles with frontmatter                                    |
+| 4b   | **`create-geo-charts`**           | Data from articles                                  | SVG charts + HTML tables + JSON-LD                                    |
+| 5    | **`audit-content`**               | Articles + Brand DNA                                | Audit reports — verified URLs, stats, claims                          |
+| 6a   | **`build-resource-pages`**        | Audited content + client codebase                   | Frontend resource center pages                                        |
+| 6b   | **`improve-aeo-geo`**             | Client website codebase                             | Code fixes for AI discoverability                                     |
 
 Steps marked **a/b/c** can run in parallel.
 

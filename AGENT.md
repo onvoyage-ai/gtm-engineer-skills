@@ -12,8 +12,8 @@ Skills for go-to-market engineering. Use them on real customers, improve them ba
 6. **`build-resource-pages`** — Build frontend resource pages from existing content
 7. **`audit-content`** — Verify URLs, statistics, citations, and company claims before publishing
 8. **`create-geo-charts`** — Data visualizations with AI-readable text layers
-9. **`improve-aeo-geo`** — Website AEO/GEO audit and fixes
-10. **`build-backlinks`** — Find free backlink/mention opportunities across HN, Quora, GitHub, directories. Outputs actionable plan with ready-to-post drafts
+9. **`improve-aeo-geo`** — Website AEO/GEO audits and fixes
+10. **`build-backlinks`** — Find free backlink/mention opportunities across HN, Quora, GitHub, directories. Outputs an actionable plan with ready-to-post drafts
 
 ## `workspace/` Directory
 
