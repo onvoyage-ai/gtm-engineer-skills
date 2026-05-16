@@ -13,7 +13,23 @@ Give it a URL → get a full brand intelligence file:
 
 ## Install
 
-Clone the repo, then symlink or copy `research-brand/` into either `~/.codex/skills/` or `~/.claude/skills/`. See the root [README](../README.md) for installation examples.
+Clone the repo, then symlink the skill folder into your tool's skills directory:
+
+**Claude Code:**
+```bash
+git clone https://github.com/onvoyage-ai/gtm-engineer-skills.git
+mkdir -p ~/.claude/skills
+ln -s "$PWD/gtm-engineer-skills/research-brand" ~/.claude/skills/research-brand
+```
+
+**Codex:**
+```bash
+git clone https://github.com/onvoyage-ai/gtm-engineer-skills.git
+mkdir -p ~/.codex/skills
+ln -s "$PWD/gtm-engineer-skills/research-brand" ~/.codex/skills/research-brand
+```
+
+See the root [README](../README.md) for the shared installation pattern.
 
 ## Usage
 
