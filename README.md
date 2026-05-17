@@ -25,6 +25,7 @@ flowchart TD
     AC["audit-content<br/>verify sources"]
 
     BRP["build-resource-pages<br/>content → frontend"]
+    AWA["audit-website-aeo<br/>live URL → scored audit"]
     IAG["improve-aeo-geo<br/>website code fixes"]
 
     RB --> RK
@@ -44,7 +45,7 @@ flowchart TD
     CGC --> AC
 
     AC --> BRP
-    AC --> IAG
+    AWA --> IAG
 ```
 
 ### Step by step
@@ -60,7 +61,8 @@ flowchart TD
 | 4b   | **`create-geo-charts`**           | Data from articles                                  | SVG charts + HTML tables + JSON-LD                                    |
 | 5    | **`audit-content`**               | Articles + Brand DNA                                | Audit reports — verified URLs, stats, claims                          |
 | 6a   | **`build-resource-pages`**        | Audited content + client codebase                   | Frontend resource center pages                                        |
-| 6b   | **`improve-aeo-geo`**             | Client website codebase                             | Code fixes for AI discoverability                                     |
+| 6b   | **`audit-website-aeo`**           | Live website URL                                    | `aeo_audit_report.md` — scored AEO/GEO audit with prioritized fixes   |
+| 6c   | **`improve-aeo-geo`**             | Client website codebase + audit report              | Code fixes for AI discoverability                                     |
 
 Steps marked **a/b/c** can run in parallel.
 
@@ -157,13 +159,19 @@ Takes existing content markdown files and builds production-ready resource cente
 
 Folder: `build-resource-pages/`
 
+### [Audit Website AEO/GEO](audit-website-aeo/)
+
+Crawls a live website, runs 16 deterministic checks plus a 6-dimension content evaluation, and produces a scored A-F audit report with prioritized fixes. Run it to get a baseline before `improve-aeo-geo`, and again afterward to measure the delta. Includes a zero-dependency Node crawler script.
+
+Folder: `audit-website-aeo/`
+
 ### [Improve Website AEO/GEO](improve-aeo-geo/)
 
 Audits a website codebase and makes code changes so AI engines can better discover, parse, quote, and cite the site.
 
 Folder: `improve-aeo-geo/`
 
-**Check your score first**: [aeo-audit.sh](https://aeo-audit.sh/)
+**Check your score first**: run `audit-website-aeo` for a local audit, or use the hosted [aeo-audit.sh](https://aeo-audit.sh/).
 
 ---
 

@@ -69,6 +69,7 @@ Invoke the skill by its slash command. Use a real input — skills are prompts, 
 | Skill | Command | Minimal test input |
 |---|---|---|
 | `research-brand` | `/research-brand` | A real company URL (e.g. `https://linear.app`) |
+| `audit-website-aeo` | `/audit-website-aeo` | A real website URL (e.g. `https://linear.app`) |
 | `research-keywords` | `/research-keywords` | An existing `brand_dna.md` in your workspace |
 | `geo-content-research` | `/geo-content-research` | An existing `brand_dna.md` |
 | `reddit-opportunity-research` | `/reddit-opportunity-research` | An existing `brand_dna.md` |
@@ -128,6 +129,22 @@ For `research-brand`, `research-keywords`, and content-writing skills, check tha
 - Contains all required sections (defined in the skill's `SKILL.md`)
 - Does not include fabricated statistics — any number cited must include a source name and year
 - Is written in the brand's voice (for content skills) or structured per the defined format
+
+### Skills with a bundled script
+
+`audit-website-aeo` ships a zero-dependency Node crawler at `scripts/aeo-audit.mjs`. Test it directly before testing the full skill:
+
+```bash
+node audit-website-aeo/scripts/aeo-audit.mjs https://linear.app --max-pages=5 --out=workspace/test-run/aeo-audit.json
+```
+
+Verify the script:
+
+- Runs on Node 18+ with no `npm install`
+- Prints a summary and writes valid JSON (`node -e "require('./workspace/test-run/aeo-audit.json')"`)
+- Reports a `foundationalScore` and 16 checks; crawls the requested page count
+
+Then run `/audit-website-aeo` and confirm it produces a single `aeo_audit_report.md` with a final score, an A-F grade, and all 6 intelligence dimensions scored with rationale.
 
 ### Code modification skills
 
