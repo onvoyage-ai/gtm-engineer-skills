@@ -14,7 +14,7 @@ The web is shifting from human-first to AI-first discovery. AI agents don't brow
 When invoked on a codebase, follow this exact sequence:
 
 ### Step 1: Baseline
-- If the user has a live URL, recommend running it through [aeo-audit.sh](https://aeo-audit.sh) first to get a score.
+- If the user has a live URL, get a baseline score first. Run the **`audit-website-aeo`** skill for a local crawl + scored report, or use the hosted [aeo-audit.sh](https://aeo-audit.sh). If an `aeo_audit_report.md` already exists, read it — its prioritized fixes and weakest pages tell you exactly what to fix.
 - If no URL is available, proceed with a code-level audit.
 
 ### Step 2: Discover the stack
@@ -31,7 +31,7 @@ Run through all checks below. For each failing check, note the file(s) to modify
 Apply changes starting with Priority 1 (blockers), then work down. Make the smallest, most targeted changes needed.
 
 ### Step 5: Verify
-- Recommend re-running the audit at [aeo-audit.sh](https://aeo-audit.sh)
+- Re-run the audit (`audit-website-aeo` skill, or [aeo-audit.sh](https://aeo-audit.sh)) and compare against the Step 1 baseline to confirm the score improved
 - Target: 80+ overall score (B+ grade or higher)
 
 ---
