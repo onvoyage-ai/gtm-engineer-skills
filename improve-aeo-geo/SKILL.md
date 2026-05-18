@@ -340,6 +340,11 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'ClaudeBot', allow: '/' },
       { userAgent: 'PerplexityBot', allow: '/' },
       { userAgent: 'Google-Extended', allow: '/' },
+      { userAgent: 'OAI-SearchBot', allow: '/' },
+      { userAgent: 'anthropic-ai', allow: '/' },
+      { userAgent: 'ChatGPT-User', allow: '/' },
+      { userAgent: 'Bytespider', allow: '/' },
+      { userAgent: 'CCBot', allow: '/' },
     ],
     sitemap: 'https://yourdomain.com/sitemap.xml',
   }
