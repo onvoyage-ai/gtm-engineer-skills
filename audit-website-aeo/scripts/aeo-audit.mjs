@@ -27,6 +27,7 @@
  */
 
 import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -168,11 +169,22 @@ function escapeRegex(input) {
   return input.replace(/[|\\{}()[\]^$+?.]/g, "\\$&");
 }
 
+function robotsRuleToRegex(rule) {
+  const trimmed = (rule || "").trim();
+  let pattern = "";
+  for (let i = 0; i < trimmed.length; i += 1) {
+    const ch = trimmed[i];
+    if (ch === "*") pattern += ".*";
+    else if (ch === "$" && i === trimmed.length - 1) pattern += "$";
+    else pattern += escapeRegex(ch);
+  }
+  return new RegExp(`^${pattern}`);
+}
+
 function ruleMatches(pathname, rule) {
   const trimmed = (rule || "").trim();
   if (!trimmed) return false;
-  const pattern = escapeRegex(trimmed).replace(/\\\*/g, ".*");
-  return new RegExp(`^${pattern}`).test(pathname);
+  return robotsRuleToRegex(trimmed).test(pathname);
 }
 
 function isPathAllowed(pathname, policy) {
@@ -219,63 +231,86 @@ async function fetchRobotsPolicy(startUrl) {
   const fallback = { allow: [], disallow: [], sitemapUrls: [], found: false, aiBotBlocked: [] };
   try {
     const txt = await fetchText(robotsUrl);
-    const lines = txt.split(/\r?\n/).map((l) => l.trim());
-    const sitemaps = new Set();
-    const starAllow = [];
-    const starDisallow = [];
-    const agentRules = new Map();
-    let currentAgent = "";
-
-    for (const rawLine of lines) {
-      const line = rawLine.replace(/\s*#.*$/, "").trim();
-      if (!line || !line.includes(":")) continue;
-      const idx = line.indexOf(":");
-      const key = line.slice(0, idx).trim().toLowerCase();
-      const value = line.slice(idx + 1).trim();
-
-      if (key === "user-agent") {
-        currentAgent = value.toLowerCase();
-        if (AI_BOT_AGENTS.includes(currentAgent) && !agentRules.has(currentAgent)) {
-          agentRules.set(currentAgent, { allow: [], disallow: [] });
-        }
-        continue;
-      }
-      if (key === "sitemap" && value) {
-        try {
-          const sm = new URL(value, robotsUrl);
-          if (sm.host === startUrl.host) sitemaps.add(sm.toString());
-        } catch { /* ignore malformed */ }
-        continue;
-      }
-      if (AI_BOT_AGENTS.includes(currentAgent)) {
-        const rules = agentRules.get(currentAgent);
-        if (rules) {
-          if (key === "allow" && value) rules.allow.push(value);
-          if (key === "disallow" && value) rules.disallow.push(value);
-        }
-      }
-      if (currentAgent !== "*") continue;
-      if (key === "allow") starAllow.push(value);
-      if (key === "disallow") starDisallow.push(value);
-    }
-
-    const aiBotBlocked = [];
-    for (const [agent, rules] of agentRules) {
-      const blocksAll = rules.disallow.some((r) => r.trim() === "/");
-      const allowsAll = rules.allow.some((r) => r.trim() === "/");
-      if (blocksAll && !allowsAll) aiBotBlocked.push(agent);
-    }
-
-    return {
-      allow: starAllow.filter(Boolean),
-      disallow: starDisallow.filter(Boolean),
-      sitemapUrls: [...sitemaps],
-      found: true,
-      aiBotBlocked,
-    };
+    return parseRobotsTxt(txt, startUrl);
   } catch {
     return fallback;
   }
+}
+
+function parseRobotsTxt(txt, startUrl) {
+  const robotsUrl = `${startUrl.protocol}//${startUrl.host}/robots.txt`;
+  const lines = txt.split(/\r?\n/).map((l) => l.trim());
+  const sitemaps = new Set();
+  const starAllow = [];
+  const starDisallow = [];
+  const agentRules = new Map();
+  const aiBotAgents = new Set(AI_BOT_AGENTS);
+  let currentAgents = [];
+  let currentGroupHasRules = false;
+
+  function ensureBotRules(agent) {
+    if (!agentRules.has(agent)) agentRules.set(agent, { allow: [], disallow: [] });
+    return agentRules.get(agent);
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/\s*#.*$/, "").trim();
+    if (!line || !line.includes(":")) continue;
+    const idx = line.indexOf(":");
+    const key = line.slice(0, idx).trim().toLowerCase();
+    const value = line.slice(idx + 1).trim();
+
+    if (key === "sitemap" && value) {
+      try {
+        const sm = new URL(value, robotsUrl);
+        if (sm.host === startUrl.host) sitemaps.add(sm.toString());
+      } catch { /* ignore malformed */ }
+      continue;
+    }
+
+    if (key === "user-agent") {
+      const agent = value.toLowerCase();
+      if (currentGroupHasRules) {
+        currentAgents = [agent];
+        currentGroupHasRules = false;
+      } else {
+        currentAgents.push(agent);
+      }
+      if (aiBotAgents.has(agent)) ensureBotRules(agent);
+      continue;
+    }
+
+    if (key !== "allow" && key !== "disallow") continue;
+    if (currentAgents.length === 0) continue;
+    currentGroupHasRules = true;
+    if (!value) continue;
+
+    if (currentAgents.includes("*")) {
+      if (key === "allow") starAllow.push(value);
+      else starDisallow.push(value);
+    }
+
+    for (const agent of currentAgents) {
+      if (!aiBotAgents.has(agent)) continue;
+      const rules = ensureBotRules(agent);
+      if (key === "allow") rules.allow.push(value);
+      else rules.disallow.push(value);
+    }
+  }
+
+  const aiBotBlocked = [];
+  for (const agent of aiBotAgents) {
+    const rules = agentRules.get(agent) ?? { allow: starAllow, disallow: starDisallow };
+    if (!isPathAllowed("/", rules)) aiBotBlocked.push(agent);
+  }
+
+  return {
+    allow: starAllow,
+    disallow: starDisallow,
+    sitemapUrls: [...sitemaps],
+    found: true,
+    aiBotBlocked,
+  };
 }
 
 function extractSitemapLocs(xml) {
@@ -412,12 +447,13 @@ function extractAiView(html, pageUrl) {
   for (const block of jsonLdBlocks) {
     try {
       const data = JSON.parse(block.trim());
-      const items = Array.isArray(data["@graph"]) ? data["@graph"] : [data];
+      const items = collectJsonLdNodes(data);
       for (const item of items) {
         if (!item || !item["@type"]) continue;
         const types = Array.isArray(item["@type"]) ? item["@type"] : [item["@type"]];
-        schemaTypes.push(...types);
-        const fields = [`@type=${types.join(",")}`];
+        const normalizedTypes = types.map(normalizeSchemaType).filter(Boolean);
+        schemaTypes.push(...normalizedTypes);
+        const fields = [`@type=${normalizedTypes.join(",")}`];
         if (item.name) fields.push(`name=${String(item.name).slice(0, 80)}`);
         if (item.author) {
           const an = typeof item.author === "string" ? item.author : item.author?.name;
@@ -506,6 +542,23 @@ function extractAiView(html, pageUrl) {
     aiMetaTags: [...aiMetaTags], hasNoindex, canonical, hasOg,
     imgCount: imgs.length, imgsWithAlt, headingLevels,
   };
+}
+
+function collectJsonLdNodes(data) {
+  if (Array.isArray(data)) return data.flatMap(collectJsonLdNodes);
+  if (!data || typeof data !== "object") return [];
+
+  const nodes = [];
+  if (data["@type"]) nodes.push(data);
+  if (data["@graph"]) nodes.push(...collectJsonLdNodes(data["@graph"]));
+  return nodes;
+}
+
+function normalizeSchemaType(type) {
+  const raw = String(type || "").trim();
+  if (!raw) return "";
+  const withoutUrl = raw.replace(/^https?:\/\/schema\.org\//i, "");
+  return withoutUrl.replace(/^schema:/i, "");
 }
 
 function classifyPageType(urlString) {
@@ -1011,7 +1064,19 @@ function printSummary(r) {
   console.log(line);
 }
 
-main().catch((err) => {
-  console.error(`Audit failed: ${err instanceof Error ? err.message : err}`);
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((err) => {
+    console.error(`Audit failed: ${err instanceof Error ? err.message : err}`);
+    process.exit(1);
+  });
+}
+
+export {
+  collectJsonLdNodes,
+  extractAiView,
+  isPathAllowed,
+  normalizeSchemaType,
+  parseRobotsTxt,
+  ruleMatches,
+  scorePageChecks,
+};
