@@ -27,6 +27,7 @@
  */
 
 import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -357,7 +358,7 @@ async function validateLlmsTxt(startUrl) {
   return result;
 }
 
-const isLlmsTxtValid = (r) => r.found && r.hasH1 && r.hasLink && r.contentLength > 100;
+export const isLlmsTxtValid = (r) => r.found && r.hasH1 && r.hasLink && r.contentLength > 100;
 
 // ─── Page extraction ─────────────────────────────────────────────────────────
 
@@ -381,7 +382,7 @@ function extractInternalLinks(html, pageUrl, startHost, policy) {
   return [...out].slice(0, 40);
 }
 
-function extractAiView(html, pageUrl) {
+export function extractAiView(html, pageUrl) {
   const title = collapse(stripTags(firstInner(html, "title")));
 
   const metaTags = findOpenTags(html, "meta");
@@ -522,7 +523,7 @@ function classifyPageType(urlString) {
 
 // ─── Per-page deterministic checks ───────────────────────────────────────────
 
-function scorePageChecks(v) {
+export function scorePageChecks(v) {
   const checks = [];
   const foundTypes = v.schemaTypes.filter((t) => RECOGNIZED_SCHEMA_TYPES.includes(t));
 
@@ -648,7 +649,7 @@ async function crawlSite(startUrl, maxPages) {
 
 // ─── Site-wide aggregation ───────────────────────────────────────────────────
 
-function aggregateChecks(pageAudits) {
+export function aggregateChecks(pageAudits) {
   const byId = new Map();
   for (const page of pageAudits) {
     for (const check of page.checks) {
@@ -665,7 +666,7 @@ function aggregateChecks(pageAudits) {
   }));
 }
 
-function buildCoverage(pageAudits) {
+export function buildCoverage(pageAudits) {
   const map = new Map();
   for (const page of pageAudits) {
     const row = map.get(page.pageType) ?? { pages: 0, scoreSum: 0 };
@@ -678,7 +679,7 @@ function buildCoverage(pageAudits) {
     .sort((a, b) => b.pages - a.pages);
 }
 
-function buildPrioritizedFixes(checks, coverage, llmsValid, blockedBots) {
+export function buildPrioritizedFixes(checks, coverage, llmsValid, blockedBots) {
   const fixes = [];
   const byId = new Map(checks.map((c) => [c.id, c]));
   const failed = (id) => !byId.get(id)?.passed;
@@ -736,7 +737,7 @@ function checkPassRatio(pageAudits, id) {
 const scoreStatus = (s) => (s >= 80 ? "Strong" : s >= 60 ? "Moderate" : "Weak");
 const priorityFromScore = (s) => (s < 45 ? "Critical" : s < 65 ? "High ROI" : s < 82 ? "Quick Win" : "Monitor");
 
-function buildIntelligenceSignals(ctx) {
+export function buildIntelligenceSignals(ctx) {
   const { pageAudits, coverage, blockedBots, rssFeedFound, discoveredFromSitemap, failedPages, maxPages } = ctx;
   const total = Math.max(1, pageAudits.length);
   const titleRatio = pageAudits.filter((p) => p.aiView.title.length >= 20).length / total;
@@ -816,7 +817,7 @@ function selectPages(pageAudits, max) {
 
 // ─── Grade ───────────────────────────────────────────────────────────────────
 
-function letterGrade(score) {
+export function letterGrade(score) {
   if (score >= 95) return "A+";
   if (score >= 90) return "A";
   if (score >= 85) return "A-";
@@ -1011,7 +1012,9 @@ function printSummary(r) {
   console.log(line);
 }
 
-main().catch((err) => {
-  console.error(`Audit failed: ${err instanceof Error ? err.message : err}`);
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((err) => {
+    console.error(`Audit failed: ${err instanceof Error ? err.message : err}`);
+    process.exit(1);
+  });
+}

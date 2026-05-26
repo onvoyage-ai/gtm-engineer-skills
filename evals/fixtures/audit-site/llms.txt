@@ -1,0 +1,12 @@
+# Fixture AEO Audit Site
+
+> This llms.txt file exists to help deterministic tests verify that the site publishes a machine-readable index for AI systems and retrieval tools.
+
+## Documentation
+- [Guide](http://127.0.0.1/guide)
+- [Product](http://127.0.0.1/product)
+
+## Key Pages
+- [Home](http://127.0.0.1/)
+- [Guide](http://127.0.0.1/guide)
+- [Product](http://127.0.0.1/product)

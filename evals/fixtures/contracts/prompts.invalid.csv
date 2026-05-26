@@ -1,0 +1,2 @@
+prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes
+best geo,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|bing,builds awareness,too short and invalid engine

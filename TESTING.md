@@ -4,6 +4,8 @@ This guide explains how to run skills locally before submitting a PR.
 
 Skills are agent prompts — there's no build step or test suite. Testing means installing the skill, running it against a real input, and verifying the output matches the expected format.
 
+For automated offline regression checks, use the eval harness in [evals/](evals/) and run `npm run test:evals`.
+
 ---
 
 ## Prerequisites

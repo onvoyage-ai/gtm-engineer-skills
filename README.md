@@ -179,6 +179,19 @@ Folder: `improve-aeo-geo/`
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute new skills, improve existing ones, or add examples.
 
+## Automated Evals
+
+The repo now includes an initial offline eval harness in [evals/](evals/). It currently covers:
+
+- strict CSV contract validation for `research-keywords`, `geo-content-research`, and `geo-content-planning`
+- deterministic regression testing for `audit-website-aeo/scripts/aeo-audit.mjs`
+
+Run it with:
+
+```bash
+npm run test:evals
+```
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

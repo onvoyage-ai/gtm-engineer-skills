@@ -1,0 +1,10 @@
+{
+  "name": "gtm-engineer-skills",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:evals": "node --test evals/tests/*.test.mjs",
+    "test:evals:contracts": "node --test evals/tests/contracts.test.mjs",
+    "test:evals:audit": "node --test evals/tests/audit-website-aeo.test.mjs"
+  }
+}

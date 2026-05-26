@@ -1,0 +1,6 @@
+prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes
+what is the best geo platform for startups,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|claude,named in ranked platform list beside direct competitors,
+how do i improve ai citation visibility for a saas site,solve,high,medium,target,how_to,ai_visibility,chatgpt|claude|gemini,brand framework appears in step by step answer,
+how does llms txt work for discovery in ai tools,learn,medium,low,easy_win,definition,technical_aeo,chatgpt|claude|ai_overview,brand tutorial gets quoted for implementation details,
+what should a comparison page include for ai overviews,learn,medium,low,target,evaluation,content_ops,chatgpt|ai_overview,brand template cited as best practice example,
+how do i add structured data for ai answer extraction,solve,high,medium,target,how_to,technical_aeo,chatgpt|claude|ai_overview,brand implementation guide used as technical reference,

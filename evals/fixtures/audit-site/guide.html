@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture Guide to AI-readable Website Structure</title>
+    <meta
+      name="description"
+      content="A detailed fixture guide describing the structural elements that make websites easier for AI systems to crawl, parse, and cite."
+    />
+    <link rel="canonical" href="https://fixture.example/guide" />
+    <meta property="og:title" content="Fixture Guide to AI-readable Website Structure" />
+    <meta
+      property="og:description"
+      content="A local guide page used in deterministic tests for metadata, heading hierarchy, and answer-first copy."
+    />
+    <meta property="article:published_time" content="2026-05-20" />
+    <meta property="article:modified_time" content="2026-05-24" />
+    <meta name="author" content="Fixture Editorial Team" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Fixture Guide to AI-readable Website Structure",
+        "author": {
+          "@type": "Person",
+          "name": "Fixture Editorial Team"
+        },
+        "datePublished": "2026-05-20",
+        "dateModified": "2026-05-24"
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/guide">Guide</a>
+        <a href="/product">Product</a>
+        <a href="/">Summary</a>
+        <a href="/product">Implementation</a>
+        <a href="/guide">Checklist</a>
+      </nav>
+    </header>
+    <main>
+      <h1>How to structure a page so AI systems can cite it</h1>
+      <p>
+        A page becomes easier for AI systems to cite when it opens with a direct answer, uses semantic headings,
+        contains verifiable details, and provides enough context for a quote to stand alone. This fixture guide
+        states that rule in the first paragraph because answer-first delivery is a core part of the audit rubric.
+        The rest of the page expands on the idea using predictable sections and stable wording that should remain
+        unchanged across test runs.
+      </p>
+      <h2>Direct answers come first</h2>
+      <p>
+        Search systems and AI assistants often extract the earliest passage that cleanly answers a user question.
+        When a page delays the answer behind branding or filler, the odds of extraction drop. This fixture therefore
+        leads with a clear definition and repeats the concept in supporting paragraphs. The goal is not literary flair.
+        The goal is stable retrieval quality that can be measured consistently across script revisions and future eval
+        harnesses.
+      </p>
+      <h3>Evidence and structure support quoting</h3>
+      <p>
+        Structured passages make quoting easier because the model can isolate a short unit without carrying along
+        excess context. Evidence also matters. In a real article that means dates, measurements, named sources, and
+        tables. In this benchmark it means explicit mentions of metadata, schema, headings, dates, and internal links.
+        Those are the deterministic clues the current script can verify today, and they are the same signals a later
+        rubric evaluator can inspect when scoring answer readiness and structural clarity.
+      </p>
+      <p>
+        The guide also includes an author name and publication dates because freshness and attribution are part of the
+        broader AEO story. Even though the deterministic script only uses those fields in heuristics, keeping them in the
+        fixture gives the repo realistic content to evaluate. That keeps the benchmark useful for both the current script
+        and the next layer of evals that will judge report quality or answer synthesis against saved crawl outputs.
+      </p>
+      <img src="/chart.svg" alt="Guide illustration showing answer first structure and semantic headings" />
+    </main>
+  </body>
+  </html>

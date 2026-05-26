@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture AEO Audit Site for GTM Engineer Skills</title>
+    <meta
+      name="description"
+      content="A fixture website used to regression test the deterministic AEO audit script with strong metadata, structure, and AI-readable content."
+    />
+    <link rel="canonical" href="https://fixture.example/" />
+    <meta property="og:title" content="Fixture AEO Audit Site for GTM Engineer Skills" />
+    <meta
+      property="og:description"
+      content="A deterministic local website fixture for testing the AEO audit script and its machine-readable checks."
+    />
+    <link rel="alternate" type="application/rss+xml" title="Fixture Feed" href="/feed.xml" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Fixture AEO Audit Site",
+        "url": "https://fixture.example/"
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/guide">Guide</a>
+        <a href="/product">Product</a>
+        <a href="/guide">FAQ Guide</a>
+        <a href="/product">Platform</a>
+        <a href="/">Overview</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Answer-first AEO guidance for regression testing</h1>
+      <p>
+        AEO audit fixtures exist to prove that the crawler can find direct answers, structured content,
+        metadata, internal links, and citation-friendly context without depending on a live website.
+        This page explains the purpose of the fixture site in plain language so the audit can extract a
+        usable answer immediately. The page is intentionally verbose because the script rewards content
+        depth, direct explanation, and clear structure that survives HTML-to-text extraction.
+      </p>
+      <h2>Why this fixture exists</h2>
+      <p>
+        The GTM Engineer Skills repository needs deterministic test assets. Live websites change too often,
+        and a regression suite that depends on production pages will fail for reasons unrelated to prompt or
+        code quality. This fixture page acts like a controlled benchmark. It includes enough body text, strong
+        metadata, semantic headings, and navigational signals to pass the deterministic portion of the audit.
+        That lets contributors refactor the script with confidence while keeping the expected behavior fixed.
+      </p>
+      <h3>What the audit should observe</h3>
+      <p>
+        The crawler should detect one H1, a descriptive title, a substantial meta description, canonical
+        markup, JSON-LD, and Open Graph tags. It should also see several internal links, a valid RSS feed,
+        accessible robots rules for AI crawlers, and a valid llms.txt file. Each of those signals represents
+        a requirement that real customer sites often miss. By preserving them in one local benchmark, the repo
+        gains a stable regression target for future work on AEO-focused skills.
+      </p>
+      <p>
+        The content also uses exact wording about agents, discoverability, quotability, and structure because
+        those are the same concepts referenced throughout the skill set. A deterministic fixture does not need
+        to be stylish, but it does need to mimic realistic prose density and heading usage. That is why these
+        paragraphs are long enough to cross the word threshold and structured enough to support clean passage
+        extraction by both the script and any future rubric-based evaluation.
+      </p>
+      <img src="/chart.svg" alt="Structured fixture chart showing that deterministic audits need stable content inputs" />
+    </main>
+  </body>
+  </html>

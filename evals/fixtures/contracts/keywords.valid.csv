@@ -1,0 +1,11 @@
+keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes
+geo platform,1800,28,commercial,target,geo_platforms,true,true,ahrefs,core category
+ai citation,950,24,research,easy_win,ai_visibility,true,true,serpapi,strong GEO fit
+content audit,720,31,commercial,target,content_ops,true,false,semrush,service intent
+resource pages,210,14,informational,content,content_ops,false,,manual,supporting term
+seo content,2400,37,commercial,target,content_ops,false,true,ahrefs,broad but still useful
+llms txt,390,9,research,easy_win,technical_aeo,true,true,autocomplete,clear technical demand
+schema markup,1600,33,informational,target,technical_aeo,false,true,paa,common implementation topic
+ai overviews,5400,48,research,hard,ai_visibility,false,true,ahrefs,top of funnel
+comparison page,260,12,commercial,content,geo_platforms,false,false,competitor,supports template planning
+brand authority,110,6,research,content,ai_visibility,false,,manual,brand signal topic

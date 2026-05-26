@@ -1,0 +1,6 @@
+keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes
+geo platform,1800,28,commercial,target,geo_platforms,true,true,ahrefs,
+ai citation,950,24,research,easy_win,ai_visibility,true,true,serpapi,
+llms txt,390,9,research,easy_win,technical_aeo,true,true,autocomplete,
+schema markup,1600,33,informational,target,technical_aeo,false,true,paa,
+comparison page,260,12,commercial,content,geo_platforms,false,false,competitor,

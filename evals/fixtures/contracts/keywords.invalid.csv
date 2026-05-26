@@ -1,0 +1,5 @@
+```csv
+keyword,volume,kd,intent,priority,cluster,is_pillar,ai_overview_present,source,notes
+geo platform,0,28,commercial,target,geo_platforms,true,true,ahrefs,should fail because volume is zero
+geo platform,140,18,commercial,target,geo_platforms,false,false,manual,duplicate keyword
+```

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 120" role="img" aria-labelledby="title desc">
+  <title id="title">Fixture chart</title>
+  <desc id="desc">A simple chart used to provide an image with alt-supported context in the fixture site.</desc>
+  <rect width="320" height="120" fill="#ffffff" />
+  <rect x="40" y="65" width="50" height="25" fill="#2563eb" />
+  <rect x="120" y="45" width="50" height="45" fill="#64748b" />
+  <rect x="200" y="25" width="50" height="65" fill="#059669" />
+  <text x="40" y="105" font-size="12">AEO</text>
+  <text x="120" y="105" font-size="12">Schema</text>
+  <text x="200" y="105" font-size="12">Links</text>
+</svg>

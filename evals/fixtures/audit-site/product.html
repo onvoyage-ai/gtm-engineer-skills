@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture Product Page for AI Citation Optimization</title>
+    <meta
+      name="description"
+      content="A fixture product page that demonstrates strong metadata, internal linking, structured data, and enough copy depth to pass the audit."
+    />
+    <link rel="canonical" href="https://fixture.example/product" />
+    <meta property="og:title" content="Fixture Product Page for AI Citation Optimization" />
+    <meta
+      property="og:description"
+      content="A local product page fixture designed to pass deterministic AEO checks in automated tests."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Fixture Citation Optimizer",
+        "description": "A local benchmark product used to test AI discoverability checks."
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/guide">Guide</a>
+        <a href="/product">Product</a>
+        <a href="/guide">Docs</a>
+        <a href="/">Resources</a>
+        <a href="/product">Pricing</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Fixture product page with machine-readable product signals</h1>
+      <p>
+        Product pages need to explain what the product does, who it is for, and why it matters in language that an AI
+        system can quote without surrounding context. This fixture page exists to satisfy that standard. It contains a
+        clear title, long description, canonical URL, Open Graph fields, and Product schema so the audit can verify that
+        all of those machine-readable signals are present at once.
+      </p>
+      <h2>What this benchmark product represents</h2>
+      <p>
+        The product itself is fictional. Its job is to simulate a real SaaS page with stable semantics and enough body
+        text to clear the depth threshold. It also links heavily to related resources because internal linking is part of
+        the deterministic score. The wording intentionally references discoverability, answers, and citations so the page
+        aligns with the larger repository theme instead of looking like generic lorem ipsum. That makes failures easier to
+        interpret when contributors inspect the saved JSON report from the test run.
+      </p>
+      <h3>Why regression fixtures matter</h3>
+      <p>
+        Without fixtures, contributors would have to depend on external websites that can change structure, metadata, or
+        crawl availability at any time. Regression tests would then fail noisily for reasons unrelated to code quality.
+        By keeping the product page local, the suite can assert a stable foundational score and a stable set of passing
+        checks. That is the right first milestone for this repo because it creates confidence in the deterministic layer
+        before adding more expensive rubric-based or agent-based evaluation lanes.
+      </p>
+      <p>
+        The final paragraph exists mainly to push the content above the minimum word count while preserving readable prose.
+        Real product pages should of course include better proof, screenshots, and deeper buyer-facing content. For a test
+        asset, the goal is simpler: keep enough structure and text in place that the crawler sees a healthy, well-linked,
+        machine-readable page every time the test suite runs locally or in CI.
+      </p>
+      <img src="/chart.svg" alt="Product fixture diagram emphasizing structured data and internal linking" />
+    </main>
+  </body>
+  </html>
