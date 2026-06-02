@@ -1,12 +1,8 @@
 # GTM Engineer Skills
 
-Agent skills for modern go-to-market engineering: brand research, SEO, GEO, Reddit opportunity research, content planning, AI-citable charts, resource pages, AEO audits, backlink discovery, and code-level website improvements.
+Search is shifting from blue links to AI answers — and the GTM playbook that won on Google does not win on ChatGPT, Claude, or Perplexity. Most AI agents still respond with generic marketing copy that no one will rank, cite, or publish.
 
-This repo is for teams that want AI agents to do more than write generic marketing copy. Each skill produces concrete artifacts an operator can review, publish, test, or feed into the next step.
-
-<p align="center">
-  <img src="assets/logo.svg" alt="GTM Engineer Skills" width="120" />
-</p>
+This repo is a different kind of toolkit. Each skill is a focused agent workflow that ships a concrete GTM artifact — a brand DNA doc, a keyword or GEO prompt cluster, a content architecture, AI-citable charts, an AEO audit, a backlink plan, or code-level website fixes. Outputs are files an operator can review, publish, test, or hand to the next skill in the pipeline.
 
 ## What this repo helps you do
 
