@@ -9,6 +9,7 @@ Give it a URL → get a full brand intelligence file:
 - Key features, pricing, target customer
 - 3-5 competitors with overlap analysis
 - Brand voice and positioning
+- Optional public X/Twitter evidence for social proof, objections, and market language
 - Content gaps and next-step recommendations
 
 ## Install
