@@ -180,6 +180,7 @@ This repo's AEO/GEO guidance is grounded in published research and large-scale i
 - Ahrefs freshness and AI citation study: https://ahrefs.com/blog/do-ai-assistants-prefer-to-cite-fresh-content/
 - Conductor AEO/GEO benchmarks: https://www.conductor.com/academy/aeo-geo-benchmarks-report/
 - AirOps LLM content structure report: https://www.airops.com/report/structuring-content-for-llms
+- Awesome Agentic Commerce (curated GEO/AEO + agentic commerce resource hub): https://github.com/MentionNetwork/awesome-agentic-commerce
 
 ## Platform notes
 
