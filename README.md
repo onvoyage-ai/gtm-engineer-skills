@@ -205,4 +205,4 @@ MIT, see [`LICENSE`](LICENSE).
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=onvoyage-ai/gtm-engineer-skills&type=Date)](https://www.star-history.com/#onvoyage-ai/gtm-engineer-skills&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=onvoyage-ai/gtm-engineer-skills&type=Date)](https://star-history.dera.page/#onvoyage-ai/gtm-engineer-skills&Date)
