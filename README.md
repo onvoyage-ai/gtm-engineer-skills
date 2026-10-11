@@ -8,7 +8,8 @@ This repo is a different kind of toolkit. Each skill is a focused agent workflow
 
 | Goal | Skills to use | Output |
 | --- | --- | --- |
-| Understand a market and brand | `research-brand`, `research-keywords`, `geo-content-research` | Brand DNA, SEO/GEO keyword clusters, AI prompt targets |
+| Understand a market and brand | `research-brand`, `research-keywords`, `geo-content-research` | Brand DNA (aliases, entity competitors), keywords.csv + geo_seeds.csv, non-branded prompts.csv + brand_check.csv |
+| Measure AI visibility over time | `geo-monitor` | Dated XLSX benchmark: embedded evidence, SUMMARY (visibility + RAPP), entity-competitor sheet |
 | Find demand in real communities | `reddit-opportunity-research`, `build-backlinks` | Subreddit opportunities, thread patterns, backlink and mention plan |
 | Plan content that can rank and get cited | `geo-content-planning`, `write-seo-geo-content` | Content architecture, product-led article drafts, page briefs |
 | Add evidence and visual assets | `create-geo-charts`, `audit-content` | AI-readable charts, data tables, JSON-LD, source verification |
@@ -34,9 +35,10 @@ The skills are designed to run as a pipeline. Each stage creates files that beco
 flowchart TD
     RB["research-brand<br/>URL -> brand_dna.md"]
 
-    RK["research-keywords<br/>-> keyword_research.md"]
+    RK["research-keywords<br/>-> keywords.csv + geo_seeds.csv"]
     ROR["reddit-opportunity-research<br/>-> reddit_opportunities.md"]
-    GCR["geo-content-research<br/>-> geo_prompt_targets.md"]
+    GCR["geo-content-research<br/>-> prompts.csv + brand_check.csv"]
+    GM["geo-monitor<br/>-> dated XLSX benchmark"]
 
     GCP["geo-content-planning<br/>-> content_architecture.md"]
     BB["build-backlinks<br/>-> backlink_plan.md"]
@@ -53,12 +55,16 @@ flowchart TD
     RB --> RK
     RB --> ROR
     RB --> GCR
+    RB --> GM
 
+    RK --> GCR
     RK --> GCP
     ROR --> GCP
+    GCR --> GM
     GCR --> GCP
-    ROR --> BB
     GCR --> BB
+    GM --> GCP
+    ROR --> BB
 
     GCP --> WSGC
     GCP --> CGC
@@ -130,9 +136,10 @@ claims before publishing.
 | Skill | Use it for | Main output |
 | --- | --- | --- |
 | [`research-brand`](research-brand/) | Understand positioning, audience, competitors, voice, and messaging from a company URL | `brand_dna.md` |
-| [`research-keywords`](research-keywords/) | Find SEO and GEO keywords using web research, AI analysis, and optional SERP scripts | `keyword_research.md` |
+| [`research-keywords`](research-keywords/) | Find SEO and GEO keywords using web research, AI analysis, and optional SERP scripts | `keywords.csv` + `geo_seeds.csv` |
 | [`reddit-opportunity-research`](reddit-opportunity-research/) | Discover Reddit pain points, subreddits, thread patterns, and user language | `reddit_opportunities.md` |
-| [`geo-content-research`](geo-content-research/) | Identify prompts people ask AI engines about a category | `geo_prompt_targets.md` |
+| [`geo-content-research`](geo-content-research/) | Identify the prompts people ask AI engines about a category — strictly non-branded | `prompts.csv` + `brand_check.csv` |
+| [`geo-monitor`](geo-monitor/) | Benchmark brand presence in live AI answers (ChatGPT, Gemini, Google AIO, Grok, Claude) over time; resumable, evidence-embedded | dated `geo_monitor_<date>.xlsx` |
 | [`geo-content-planning`](geo-content-planning/) | Turn research into a page architecture with priority, URLs, and page types | `content_architecture.md` |
 | [`write-seo-geo-content`](write-seo-geo-content/) | Draft product-led content optimized for search and AI citation | Markdown articles with frontmatter |
 | [`create-geo-charts`](create-geo-charts/) | Produce data visualizations with text summaries, HTML tables, CSV, and JSON-LD | AI-readable chart packages |
@@ -150,7 +157,7 @@ claims before publishing.
 - [`create-geo-charts/examples/`](create-geo-charts/examples/): sample charts, CSV datasets, and HTML outputs.
 - [`geo-content-planning/plan.csv.schema.md`](geo-content-planning/plan.csv.schema.md): content plan CSV contract.
 - [`research-keywords/keywords.csv.schema.md`](research-keywords/keywords.csv.schema.md): keyword CSV contract.
-- [`geo-content-research/prompts.csv.schema.md`](geo-content-research/prompts.csv.schema.md): GEO prompt CSV contract.
+- [`geo-content-research/prompts.csv.schema.md`](geo-content-research/prompts.csv.schema.md): GEO prompt CSV contract (non-branded enforcement) + `brand_check.csv` companion format.
 
 ## Built-in tools
 
@@ -174,6 +181,7 @@ The evals currently cover CSV contract validation and deterministic regressions 
 
 This repo's AEO/GEO guidance is grounded in published research and large-scale industry studies, including:
 
+- Crystal Carter & Dmitry Lebedev, *The New Rules of AI Search and The Dawn of Agentic Media* (2026) — basis of the prompt-tracking and RAPP measurement in `geo-monitor`.
 - GEO paper, KDD 2024: https://arxiv.org/abs/2311.09735
 - SE Ranking AI Mode optimization study: https://seranking.com/blog/how-to-optimize-for-ai-mode/
 - Growth Memo AI citation analysis: https://www.growth-memo.com/p/the-science-of-how-ai-pays-attention

@@ -1,6 +1,11 @@
 ---
 name: geo-content-research
-description: Researches what prompts people ask AI engines (ChatGPT, Gemini, Perplexity, Claude) about a product category and produces a prompts.csv artifact — a prioritized, strictly-schema'd list of the queries where the brand should be cited. Feeds the monitor workflow.
+description: >
+  Researches what prompts people ask AI engines (ChatGPT, Gemini, Perplexity, Claude) about a product category and
+  produces prompts.csv — strictly NON-BRANDED (any prompt containing a brand alias is pruned as confirmation bias;
+  it is the visibility battleground measurement). Branded accuracy/sentiment queries go to a companion
+  brand_check.csv (2-4 rows). Adds first-party seed mining, AI-assisted prompt expansion, entity-competitor
+  discovery, and a parameter-lock step before generation. Feeds the monitor workflow.
 ---
 
 # GEO Content Research — Produce prompts.csv
@@ -55,6 +60,30 @@ This phase discovers the exact queries people type into AI chatbots about this c
 
 **GEO prompts are NOT the same as SEO keywords.** SEO keywords are 1-3 word terms for Google ranking. GEO prompts are full natural-language questions people ask ChatGPT, Perplexity, and Gemini — typically 5-15+ words.
 
+### Step 2-P: Parameter lock (v2 — book ch.15: "Before you add prompts, understand what you're actually measuring")
+
+Decide and state these three BEFORE generating any prompt; they constrain what may enter the list:
+
+| Parameter | Source | Consequence |
+|---|---|---|
+| **Engine set** | `brand_dna.md → AI Visibility Inputs → Platform mix` if `[owner]` data exists; else default (the engines geo-monitor actually runs) | Do not write `target_engines=claude` rows for a brand whose audience doesn't use Claude; a loss there measures nothing |
+| **Mention terms** | `brand_dna.md → Brand Topics` (the full alias inventory — never a single name) | If Brand Topics is thin/missing → flag it; visibility numbers computed against a bad alias list are meaningless (book ch.15) |
+| **Cadence** | how often geo-monitor realistically runs (weekly? per content cycle?) | Cadence slower than weekly ⇒ exclude time-sensitive prompts ("hôm nay", "tuần này", flash-sale phrasing) from the list entirely |
+
+Present the locked parameters to the user, then proceed.
+
+### Step 2A-0: First-party seed mining (v2 — the gold source, do this FIRST)
+
+Real customer questions from the brand's own channels outperform anything you can imagine (book: "sales calls, customer service emails, live-chat transcripts... This is gold. It's literally what people ask.").
+
+Ask the user for exports/screenshots of, in priority order:
+1. Chat/inbox logs (Facebook Messenger, Shopee chat, Discord, Zalo) — last 3 months
+2. Sales-call notes / objections heard repeatedly
+3. Support tickets + FAQ from the site
+4. Community threads where customers answer each other (VN: Facebook groups, VOZ/Tinh Tế threads addressed to the brand)
+
+Extract 30–50 verbatim questions/phrases. Tag each seed `source: first_party`. If the user cannot supply any, record "no first-party data" in Phase 1 notes and continue — do NOT fabricate customer quotes.
+
 ### Step 2A: Discover prompts across 8 query types
 
 Using web search, research the exact questions people ask. Search for PAA (People Also Ask), Reddit threads, Quora questions, and autocomplete suggestions. Organize into these 8 buckets:
@@ -72,16 +101,16 @@ Using web search, research the exact questions people ask. Search for PAA (Peopl
 - "Best [product] for [audience segment]"
 
 #### 3. Comparison prompts
-- "[Brand A] vs [Brand B] — which is better?"
-- "[Product] vs [alternative approach]"
-- "How does [brand] compare to [competitor]?"
+- "[Product A] vs [Product B] — which is better?"  (A and B are the *options a buyer weighs* — models, shop types, service models. The tracked brand NEVER appears: a brand-vs-competitor prompt is competitor-branded and gets pruned, see Step 2D-P)
+- "[service approach X] vs [service approach Y]" (e.g. "order qua trung gian vs tự order")
 - "[Product] alternatives"
 
 #### 4. Evaluation / trust prompts
-- "Is [product/brand] worth it?"
-- "What are the pros and cons of [product]?"
-- "[Product] problems / issues"
-- "Can I trust [brand]?"
+Trust queries are high-value GEO targets — but ONLY in their non-branded form (a brand-named trust query always "wins" and measures nothing):
+- "Is [product category / origin / service model] worth it?" ("hàng nội địa Trung có bền không", "mua qua trung gian có ổn không")
+- "What are the pros and cons of [product type]?"
+- "[service model] problems / risks / lừa đảo" — the doubt framing buyers type BEFORE they name a shop
+- "Can I trust [shop type / channel]?"
 
 #### 5. How-to / problem-solving prompts
 - "How to [solve problem the product fixes]"
@@ -139,6 +168,18 @@ Run these searches and read the actual threads:
 
 **Aim for 60-100 raw prompts before deduplication.**
 
+### Step 2A-3: AI-assisted prompt expansion (v2)
+
+You are going to use AI to generate AI prompts (book p.139, "prompt archaeology → expansion"). Take your seed lists (first-party + PAA + Reddit + long-tails from research-keywords' `geo_seeds.csv` if present) and run the expansion template:
+
+> "Using the copy below, generate 15 questions that a **[target customer — be specific, e.g. 'Vietnamese gamer on a budget buying Chinese-domestic monitors']** is likely to ask an LLM about **[topic]**."
+
+Rules:
+- Run the template 3+ times with different seed combinations; if browser access is available, run it once per engine (ChatGPT, Gemini, Claude) — each model produces different phrasing angles and that diversity is the point.
+- Every expanded question must still sound like a human asking, in the customer's language (not marketer language).
+- Tag each prompt's provenance in `notes`: `seed:first_party`, `seed:paa`, `seed:reddit`, `seed:longtail`, `seed:ai_expansion`.
+- AI-expanded prompts are candidates, not discoveries — they earn a row only if the category plausibly has that question volume; prefer keeping them where mined seeds are thin (unanswered-question gaps).
+
 ### Step 2B: Map AI evaluation dimensions
 
 For the user's product category, identify what criteria an AI engine uses to evaluate and recommend. These typically include:
@@ -179,7 +220,35 @@ For each discovered prompt, assess:
    - **Med** = decent content from known brands
    - **Hard** = dominated by incumbents (NVIDIA, IBM, Gartner, etc.)
 
-Present a summary: "Found X prompts across 8 categories. Ready to build the GEO Prompt Target Table?"
+### Step 2E: Entity-competitor discovery (v2 — book p.136)
+
+In AI search your real competitors are **whoever the model's knowledge graph associates with you** — not your self-declared market rivals. "A smaller competitor with better-structured content might be stealing your AI visibility."
+
+Method (browser-based if geo-monitor infra exists; otherwise infer from the top web results of each category prompt):
+1. Run 3–5 general category prompts ("best X for Y", "where to buy X") through ≥1 engine.
+2. Record every brand/source **actually named** in the answers and citations — these are your entity competitors.
+3. Output an `entity_competitors` list to present to the user alongside the summary, and use it to:
+   - replace/augment the Phase 1 user-declared competitor list for comparison prompts (`[X] vs [entity competitor]`)
+   - populate `brand_mention_mechanism` with realistic adjacency ("named alongside A, B" — never invent the set, cite what you observed)
+   - feed `build-backlinks` (where do entity competitors get mentioned that you don't appear)
+
+### Step 2F: Prune with the ch.15 filter (v2 — do this before scoring/dedup)
+
+Apply the book's keep-or-kill table to EVERY candidate prompt:
+
+| Prompt type | Example | Verdict |
+|---|---|---|
+| Contains the tracked brand (any Brand-Topics alias) | "T-Order có uy tín không?" | ✖ prune from prompts.csv → candidate for `brand_check.csv` instead |
+| Competitor-branded (names a rival, brand absent by construction) | "mua ở GearVN có tốt không?" | ✖ prune — can never surface you |
+| Non-branded comparison (buyer's real dilemma, no shop named) | "tự order Taobao hay qua trung gian?" | ✔ keep — competitive battleground |
+| General on-topic | "màn hình nội địa Trung mua ở đâu uy tín" | ✔ keep — category battleground |
+| General off-topic | "màn hình hoạt động như thế nào" | ⚠ maybe — keep only if the answer plausibly routes to the brand's content |
+
+The scan is mechanical: every prompt is lowercased and checked against the Step 2-P mention-terms list; a hit is a prune, no exceptions, no "but it's a great question". Prompts that survive become the visibility benchmark; the quality of the list is now bounded by the quality of the alias inventory from brand_dna.
+
+A market rival absent from every AI answer is not your benchmark; a niche shop that appears everywhere is.
+
+Present a summary: "Found X prompts across 8 categories (+ Y first-party, Z AI-expanded); pruned W branded/competitor-branded; entity competitors observed: [list]. Ready to build the GEO Prompt Target Table?"
 
 ---
 
@@ -198,21 +267,22 @@ Your final response **must be raw CSV content and nothing else**. The harness ca
 4. **Exactly 10 fields per row.** Empty fields written as two adjacent commas.
 5. **Quote fields containing commas, newlines, or double-quotes.** Escape embedded `"` as `""`. Most prompts contain no commas, so unquoted is usually fine.
 6. **Minimum 20 data rows.** Fewer fails validation.
+7. **ZERO brand aliases in the prompt column** (Step 2F is machine-enforced: any alias from the Brand-Topics inventory = artifact fails validation).
 
 ### Column contract
 
 | # | Column | Type | Required | Allowed values |
 |---|--------|------|----------|----------------|
-| 1 | `prompt` | string | yes | full natural-language query, ≥ 5 words, unique (case-insensitive) |
+| 1 | `prompt` | string | yes | full natural-language query, ≥ 5 words, unique (case-insensitive), **free of every brand alias** |
 | 2 | `tier` | enum | yes | `buy` \| `solve` \| `learn` |
 | 3 | `citability` | enum | yes | `high` \| `medium` \| `low` |
-| 4 | `competition` | enum | yes | `none` \| `low` \| `medium` \| `hard` |
+| 4 | `competition` | enum | yes | `none` \| `low` \| `medium` \| `hard` — judged from OBSERVED entity-competitor presence (Step 2E) where monitor data exists; not vibes |
 | 5 | `priority` | enum | yes | `easy_win` \| `target` \| `skip` |
 | 6 | `query_type` | enum | yes | `definition` \| `recommendation` \| `comparison` \| `evaluation` \| `how_to` \| `cost` \| `landscape` \| `use_case` |
 | 7 | `cluster` | string | yes | non-empty, snake_case recommended |
-| 8 | `target_engines` | string | yes | `\|`-separated subset of `chatgpt`, `perplexity`, `claude`, `gemini`, `ai_overview`; ≥ 1 |
+| 8 | `target_engines` | string | yes | `\|`-separated subset of the **locked engine set** (Step 2-P); ≥ 1 |
 | 9 | `brand_mention_mechanism` | string | yes | non-empty, concrete — no vague phrases like "builds awareness" |
-| 10 | `notes` | string | no | free text |
+| 10 | `notes` | string | no | free text; provenance tags from Step 2A-3 (`seed:first_party`, `seed:paa`, `seed:reddit`, `seed:longtail`, `seed:engine_chip`, `seed:ai_expansion`) go here |
 
 ### Semantic rules
 
@@ -228,32 +298,45 @@ Your final response **must be raw CSV content and nothing else**. The harness ca
 - **Target tier distribution** (guideline, not enforced): ~20% `buy`, ~40% `solve`, ~40% `learn`
 - **Sort order** (emit in this order): `buy`/`easy_win` first, then `buy`/`target`, then `solve`/`easy_win`, and so on. `skip` last.
 - **Engine selection**: higher-value prompts should target multiple engines; niche or low-priority prompts may target just one
+- **The non-branded guarantee (v2 — ch.15 pruning made structural)**: prompts.csv contains ONLY prompts a person could type without knowing the brand exists. That is the whole benchmark — "If you're showing up here, you're winning. If you're not, you know where to improve."
+- **brand_check.csv (v2 — separate artifact, ch.14 RAPP)**: 2–4 branded trust queries ("is [brand] legit…", "[brand] warranty policy…", "[brand] vs [entity competitor]") are still worth asking — but they measure *Accuracy* and *Sentiment*, never visibility, so they live in their own file and their own report block. Emitted BEFORE the final response as a delimited block (same mechanics as research-keywords' geo_seeds handoff):
+  ```
+  ---BRAND_CHECK_BEGIN---
+  prompt,focus,rationale
+  is [brand] legit or a scam,accuracy|sentiment,what do engines repeat about the brand when asked directly
+  [brand] warranty and return policy explained,sentiment,does the answer reflect real policy or stale/forum rumors
+  ---BRAND_CHECK_END---
+  ```
+  `focus` ∈ `accuracy` (facts vs brand_dna evidence) | `sentiment` (positive/neutral/negative framing). The operator saves the block as `brand_check.csv`; geo-monitor runs these rows flagged so they never enter the visibility denominator.
 
 ### Example (what your entire final response must look like)
 
 ```
 prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes
-what is the best geo optimization platform,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|claude|gemini,named in top-5 list alongside profound and otterly,
+what is the best geo optimization platform,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|claude|gemini,named in top-5 list alongside profound and otterly,seed:paa
 how do i optimize content for ai citations,solve,high,medium,target,how_to,content_strategy,chatgpt|perplexity|claude,brand methodology cited as reference approach,
-voyage vs profound which is better,buy,high,none,easy_win,comparison,geo_platforms,chatgpt|perplexity,comparison table authored by brand builds association,
-best ai visibility tracking tools 2026,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|gemini,named alongside otterly and geoptic,
-how to measure llm citation rates,solve,high,low,easy_win,how_to,measurement,chatgpt|perplexity,brand's dashboard cited as measurement solution,
+tự order hàng taobao so với thuê dịch vụ trung gian cái nào rủi ro ít hơn,buy,high,none,easy_win,comparison,order_service,chatgpt|perplexity|gemini,brand's cost-vs-risk comparison table cited as the service option,seed:reddit
+best ai visibility tracking tools 2026,buy,high,low,easy_win,recommendation,geo_platforms,chatgpt|perplexity|gemini,named alongside otterly and geoptic per observed answers,seed:engine_chip
+how to measure llm citation rates,solve,high,low,easy_win,how_to,measurement,chatgpt|perplexity,brand's dashboard cited as measurement solution,seed:ai_expansion
 what is generative engine optimization,learn,medium,hard,skip,definition,geo_fundamentals,chatgpt,brand cited via byline on definition page,
 ```
 
-(Above is illustrative — your actual CSV has 20+ rows.)
+(Above is illustrative — your actual CSV has 20+ rows, and **none of them contains the brand's name or any alias from Brand Topics**.)
 
 ### Before emitting
 
 Run the checklist:
+- [ ] Step 2-P parameters (engine set / mention terms / cadence) stated before generation
 - [ ] Final response starts with `prompt,tier,citability,competition,priority,query_type,cluster,target_engines,brand_mention_mechanism,notes\n`
 - [ ] No code fences anywhere
 - [ ] No prose before or after
 - [ ] ≥ 20 data rows
 - [ ] Every row has exactly 10 comma-separated fields
 - [ ] Every enum value is from the allowed set (exact spelling, lowercase snake_case)
+- [ ] **No prompt text contains any brand alias from Brand Topics** (scan every row — one hit fails the artifact)
+- [ ] brand_check.csv block emitted BEFORE the final response (2–4 rows) — never inside the final CSV
 - [ ] No duplicate prompts (case-insensitive)
-- [ ] Every `target_engines` value uses `|` as separator and only known engine names
+- [ ] Every `target_engines` value uses `|` as separator and stays within the locked engine set
 - [ ] Every `brand_mention_mechanism` is concrete, not vague
 
 Then emit the CSV. Nothing else.

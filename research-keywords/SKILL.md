@@ -1,6 +1,6 @@
 ---
 name: research-keywords
-description: Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush. Produces a validated keywords.csv file with a fixed schema for downstream pipeline consumption.
+description: Finds high-value SEO and GEO keywords using web search, AI analysis, and optionally paid tools like Ahrefs or Semrush. Produces a validated keywords.csv file with a fixed schema for downstream pipeline consumption, plus a geo_seeds.csv long-tail handoff for GEO prompt research and a branded-keywords export that feeds brand_dna Brand Topics.
 ---
 
 # Research SEO/GEO Keywords
@@ -168,6 +168,8 @@ Ask the user:
 >
 > If no, I'll use qualitative signals (autocomplete presence, PAA visibility, AI Overview presence) to estimate viability."
 
+**v2 — one extra ask in the same breath (feeds brand_dna Brand Topics):** if the user has Ahrefs/Semrush, also ask them to open the brand's OWN domain → Organic keywords → filter/search the brand name → export the **branded-keywords report** (top ~30). The distinct branded terms found there (product names, misspellings, model suffixes) are handed to the operator to update the `Brand Topics` section of `brand_dna.md` — book ch.15: you cannot measure visibility against aliases you never listed. If they have no paid tool, skip silently — autocomplete + site-search proxies from Phase 2 cover what they can.
+
 ### Step 3B: If User Provides a CSV
 
 When the user provides an Ahrefs/Semrush CSV:
@@ -286,7 +288,29 @@ teleoperation,210,28,research,easy_win,robotics_models,false,,paa,strong PAA cov
 
 ### Strategic notes, blog topics, killed keywords
 
-These do NOT go in the final CSV. If you want to surface them, fold signal into the `notes` column per row (e.g. `notes="polluted by enterprise infra — always use modifiers"`). Everything else is dropped for this artifact.
+These do NOT go in the final CSV. If you want to surface them, fold signal into the `notes` column per row (e.g. `notes="polluted by enterprise infra — always use modifiers"`). Everything else is dropped for this artifact — EXCEPT the GEO seed handoff below.
+
+### GEO seed handoff — geo_seeds.csv (v2, do BEFORE the final response)
+
+The long-tail phrases that SEO kills ("3-5 word phrases that feel too specific for traditional SEO are perfect for AI prompts" — this is the pipeline's only bridge from keyword data to GEO prompts; without it they are lost).
+
+After Phase 4 is confirmed and **before** emitting the final keywords.csv response, output one clearly delimited block:
+
+```
+---GEO_SEEDS_BEGIN---
+seed,from_keyword,source
+best water purifier for hard water areas in vietnam,water purifier,autocomplete
+...
+---GEO_SEEDS_END---
+```
+
+- Every collected 4+ word phrase from autocomplete/PAA/Reddit/blog-topics discovery that has topical relevance (aim 15–40 rows)
+- The harness/operator saves the block as `geo_seeds.csv` and feeds it to `geo-content-research` Step 2A-3 (AI expansion)
+- This block must NOT appear in the final response — the final response is keywords.csv only. It goes in the "Ready for the final deliverable?" message instead.
+
+### AI-adoption sanity check (v2, one question in Phase 4)
+
+Visibility work only pays where the audience actually asks AI. If known (user data, market reports, or category common sense — cite which), note in the cluster summary whether the audience is AI-heavy (tech buyers, researchers) or AI-light, and let it shade `priority` for GEO-relevant clusters. Never fabricate an adoption number.
 
 ### Before emitting
 
