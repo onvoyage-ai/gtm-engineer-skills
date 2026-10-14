@@ -51,6 +51,18 @@ const AUTOCOMPLETE_SUFFIXES = [
 
 // ─── CLI Args ─────────────────────────────────────────────────────────────────
 
+const valueOptions = new Map([
+  ["--seeds", "seeds"],
+  ["-s", "seeds"],
+  ["--out", "out"],
+  ["-o", "out"],
+  ["--gl", "gl"],
+  ["--hl", "hl"],
+  ["--depth", "depth"],
+  ["-d", "depth"],
+]);
+const recognizedOptions = new Set([...valueOptions.keys(), "--free", "--help", "-h"]);
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const opts = {
@@ -63,33 +75,20 @@ function parseArgs() {
   };
 
   for (let i = 0; i < args.length; i++) {
-    switch (args[i]) {
-      case "--seeds":
-      case "-s":
-        opts.seeds = args[++i].split(",").map((s) => s.trim());
-        break;
-      case "--free":
-        opts.free = true;
-        break;
-      case "--out":
-      case "-o":
-        opts.out = args[++i];
-        break;
-      case "--gl":
-        opts.gl = args[++i];
-        break;
-      case "--hl":
-        opts.hl = args[++i];
-        break;
-      case "--depth":
-      case "-d":
-        opts.depth = args[++i];
-        break;
-      case "--help":
-      case "-h":
-        printHelp();
-        process.exit(0);
+    const flag = args[i];
+    if (flag === "--help" || flag === "-h") {
+      printHelp();
+      process.exit(0);
     }
+    if (flag === "--free") {
+      opts.free = true;
+      continue;
+    }
+    const field = valueOptions.get(flag);
+    if (!field) continue;
+    const value = readValue(args, i);
+    opts[field] = convertValue(field, value);
+    i += 1;
   }
 
   if (opts.seeds.length === 0) {
@@ -108,6 +107,20 @@ function parseArgs() {
   }
 
   return opts;
+}
+
+function readValue(args, index) {
+  const value = args[index + 1];
+  if (value === undefined || recognizedOptions.has(value)) {
+    console.error(`Error: Missing value for ${args[index]}. Use --help for usage.`);
+    process.exit(1);
+  }
+  return value;
+}
+
+function convertValue(field, value) {
+  if (field === "seeds") return value.split(",").map((s) => s.trim());
+  return value;
 }
 
 function printHelp() {
