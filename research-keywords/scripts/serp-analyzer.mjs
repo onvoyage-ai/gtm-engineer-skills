@@ -27,6 +27,21 @@ import { URLSearchParams } from "url";
 
 const SERPAPI_KEY = process.env.SERPAPI_KEY || "";
 
+const valueOptions = new Map([
+  ["--input", "input"],
+  ["-i", "input"],
+  ["--keywords", "keywords"],
+  ["-k", "keywords"],
+  ["--top", "top"],
+  ["-t", "top"],
+  ["--track", "track"],
+  ["--out", "out"],
+  ["-o", "out"],
+  ["--gl", "gl"],
+  ["--hl", "hl"],
+]);
+const recognizedOptions = new Set([...valueOptions.keys(), "--help", "-h"]);
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const opts = {
@@ -40,37 +55,16 @@ function parseArgs() {
   };
 
   for (let i = 0; i < args.length; i++) {
-    switch (args[i]) {
-      case "--input":
-      case "-i":
-        opts.input = args[++i];
-        break;
-      case "--keywords":
-      case "-k":
-        opts.keywords = args[++i].split(",").map((s) => s.trim());
-        break;
-      case "--top":
-      case "-t":
-        opts.top = parseInt(args[++i], 10);
-        break;
-      case "--track":
-        opts.track = args[++i].split(",").map((s) => s.trim().toLowerCase());
-        break;
-      case "--out":
-      case "-o":
-        opts.out = args[++i];
-        break;
-      case "--gl":
-        opts.gl = args[++i];
-        break;
-      case "--hl":
-        opts.hl = args[++i];
-        break;
-      case "--help":
-      case "-h":
-        printHelp();
-        process.exit(0);
+    const flag = args[i];
+    if (flag === "--help" || flag === "-h") {
+      printHelp();
+      process.exit(0);
     }
+    const field = valueOptions.get(flag);
+    if (!field) continue;
+    const value = readValue(args, i);
+    opts[field] = convertValue(field, value);
+    i += 1;
   }
 
   if (!SERPAPI_KEY) {
@@ -85,6 +79,22 @@ function parseArgs() {
   }
 
   return opts;
+}
+
+function readValue(args, index) {
+  const value = args[index + 1];
+  if (value === undefined || recognizedOptions.has(value)) {
+    console.error(`Error: Missing value for ${args[index]}. Use --help for usage.`);
+    process.exit(1);
+  }
+  return value;
+}
+
+function convertValue(field, value) {
+  if (field === "keywords") return value.split(",").map((s) => s.trim());
+  if (field === "track") return value.split(",").map((s) => s.trim().toLowerCase());
+  if (field === "top") return parseInt(value, 10);
+  return value;
 }
 
 function printHelp() {
