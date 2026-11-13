@@ -12,12 +12,20 @@
  * Also supports a free fallback mode using Google's suggestions endpoint
  * (no API key needed, but limited to autocomplete only).
  *
+ * Third provider: GoAnyAPI (https://goanyapi.com). With `--provider goanyapi`
+ * the SERP analysis step runs on the GoAnyAPI SERP Stable edition
+ * (GET /api/v1/serp-stable, 1 credit per request) and autocomplete still uses
+ * Google's free suggestions endpoint, so credits are only spent on SERP calls.
+ *
  * Usage:
  *   # With SerpAPI key (full features)
  *   SERPAPI_KEY=xxx node keyword-explorer.mjs --seeds "physical AI, DePAI, decentralized robotics"
  *
  *   # Free mode (autocomplete only, no API key)
  *   node keyword-explorer.mjs --seeds "physical AI, DePAI" --free
+ *
+ *   # With GoAnyAPI as the SERP provider
+ *   GOANYAPI_API_KEY=xxx node keyword-explorer.mjs --seeds "physical AI" --provider goanyapi
  *
  *   # With output file
  *   SERPAPI_KEY=xxx node keyword-explorer.mjs --seeds "physical AI" --out keywords.json
@@ -27,12 +35,16 @@
  */
 
 import https from "https";
+import http from "http";
 import fs from "fs";
 import { URL, URLSearchParams } from "url";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const SERPAPI_KEY = process.env.SERPAPI_KEY || "";
+const GOANYAPI_API_KEY = process.env.GOANYAPI_API_KEY || "";
+// Overridable for testing/proxying; must point at a GoAnyAPI-compatible host.
+const GOANYAPI_BASE_URL = process.env.GOANYAPI_BASE_URL || "https://api.goanyapi.com";
 const AUTOCOMPLETE_SUFFIXES = [
   "",
   " for",
@@ -60,6 +72,7 @@ function parseArgs() {
     gl: "us",
     hl: "en",
     depth: "normal", // "quick" | "normal" | "deep"
+    provider: "serpapi", // "serpapi" | "goanyapi"
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -85,6 +98,10 @@ function parseArgs() {
       case "-d":
         opts.depth = args[++i];
         break;
+      case "--provider":
+      case "-p":
+        opts.provider = args[++i];
+        break;
       case "--help":
       case "-h":
         printHelp();
@@ -97,7 +114,12 @@ function parseArgs() {
     process.exit(1);
   }
 
-  if (!opts.free && !SERPAPI_KEY) {
+  if (opts.provider !== "serpapi" && opts.provider !== "goanyapi") {
+    console.error(`Error: unknown provider "${opts.provider}". Use "serpapi" or "goanyapi".`);
+    process.exit(1);
+  }
+
+  if (!opts.free && opts.provider === "serpapi" && !SERPAPI_KEY) {
     console.log(
       "No SERPAPI_KEY found. Falling back to free mode (autocomplete only)."
     );
@@ -105,6 +127,14 @@ function parseArgs() {
       "Set SERPAPI_KEY env var for full features (PAA, Related Searches, SERP features).\n"
     );
     opts.free = true;
+  }
+
+  if (opts.provider === "goanyapi" && !GOANYAPI_API_KEY) {
+    console.error(
+      "Error: --provider goanyapi requires the GOANYAPI_API_KEY environment variable."
+    );
+    console.error("Get a key at https://goanyapi.com (SERP Stable: 1 credit per request).");
+    process.exit(1);
   }
 
   return opts;
@@ -118,20 +148,26 @@ Usage:
   SERPAPI_KEY=xxx node keyword-explorer.mjs --seeds "keyword1, keyword2"
 
 Options:
-  --seeds, -s   Comma-separated seed keywords (required)
-  --free        Use free Google suggestions (no API key, autocomplete only)
-  --out, -o     Output file path (default: stdout as JSON)
-  --gl          Country code (default: us)
-  --hl          Language code (default: en)
-  --depth, -d   Research depth: quick | normal | deep (default: normal)
-  --help, -h    Show this help
+  --seeds, -s     Comma-separated seed keywords (required)
+  --free          Use free Google suggestions (no API key, autocomplete only)
+  --provider, -p  SERP provider: serpapi (default) or goanyapi
+  --out, -o       Output file path (default: stdout as JSON)
+  --gl            Country code (default: us)
+  --hl            Language code (default: en)
+  --depth, -d     Research depth: quick | normal | deep (default: normal)
+  --help, -h      Show this help
 
 Environment:
-  SERPAPI_KEY    Your SerpAPI key (free tier: serpapi.com, 100 searches/month)
+  SERPAPI_KEY      Your SerpAPI key (free tier: serpapi.com, 100 searches/month)
+  GOANYAPI_API_KEY Your GoAnyAPI key (goanyapi.com; SERP Stable: 1 credit/request)
+  GOANYAPI_BASE_URL Optional. Override the GoAnyAPI API base URL (for testing)
 
 Examples:
   # Full research with SerpAPI
   SERPAPI_KEY=xxx node keyword-explorer.mjs -s "physical AI, DePAI"
+
+  # Full research with GoAnyAPI (SERP Stable, 1 credit per SERP call)
+  GOANYAPI_API_KEY=xxx node keyword-explorer.mjs -s "physical AI" --provider goanyapi
 
   # Quick autocomplete-only scan (no key needed)
   node keyword-explorer.mjs -s "physical AI" --free
@@ -452,6 +488,181 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
   };
 }
 
+// ─── GoAnyAPI Mode (SERP Stable) ─────────────────────────────────────────────
+
+function goanyapiGet(path, params) {
+  const qs = new URLSearchParams(params).toString();
+  const parsedUrl = new URL(`${GOANYAPI_BASE_URL}${path}?${qs}`);
+  const transport = parsedUrl.protocol === "http:" ? http : https;
+  return new Promise((resolve, reject) => {
+    transport
+      .get(
+        {
+          hostname: parsedUrl.hostname,
+          port: parsedUrl.port || undefined,
+          path: parsedUrl.pathname + parsedUrl.search,
+          headers: {
+            Authorization: `Bearer ${GOANYAPI_API_KEY}`,
+            Accept: "application/json",
+            "User-Agent": "KeywordExplorer/1.0",
+          },
+        },
+        (res) => {
+          let data = "";
+          res.on("data", (chunk) => (data += chunk));
+          res.on("end", () => {
+            if (res.statusCode !== 200) {
+              reject(
+                new Error(
+                  `GoAnyAPI ${path} failed (HTTP ${res.statusCode}): ${data.slice(0, 200)}`
+                )
+              );
+              return;
+            }
+            try {
+              resolve(JSON.parse(data));
+            } catch {
+              reject(
+                new Error(`Failed to parse JSON from ${path}: ${data.slice(0, 200)}`)
+              );
+            }
+          });
+        }
+      )
+      .on("error", reject);
+  });
+}
+
+// Map GoAnyAPI serp_features `type` values onto the SerpAPI-style feature names
+// this script uses downstream. Unknown types are kept as-is so new modules
+// still surface in the output instead of being dropped.
+function mapGoAnyApiFeatureType(type) {
+  const t = String(type || "").toLowerCase();
+  if (t === "people_also_ask") return "people_also_ask";
+  if (t === "related_searches" || t === "related_search") return "related_search";
+  if (t.includes("ai_overview") || t === "aio") return "ai_overview";
+  if (t.includes("snippet") || t === "answer_box") return "featured_snippet";
+  if (t.includes("knowledge")) return "knowledge_graph";
+  if (t.includes("news") || t === "top_stories") return "top_stories";
+  if (t.includes("video")) return "video_results";
+  if (t.includes("shop")) return "shopping";
+  if (t.includes("local") || t === "places") return "local_pack";
+  return t || null;
+}
+
+async function goanyapiSerpSearch(query, gl, hl) {
+  // SERP Stable edition: `query` (not `q`), 1 credit per successful request.
+  const payload = await goanyapiGet("/api/v1/serp-stable", { query, gl, hl });
+  if (payload.code && payload.code !== "ok") {
+    throw new Error(
+      `GoAnyAPI serp-stable error: ${payload.message || payload.code}`
+    );
+  }
+  return payload?.data?.result || {};
+}
+
+async function runGoAnyApiResearch(seeds, gl, hl, depth) {
+  const keywords = new Map();
+  const paaQuestions = [];
+  const serpFeaturesByQuery = {};
+  const relatedSearches = new Map();
+
+  // Step 1: autocomplete via Google's free suggestions endpoint (zero cost).
+  console.log("\n━━━ Step 1: Autocomplete Mining (free Google suggestions) ━━━");
+  const suggestions = await runFreeAutocomplete(seeds, gl, hl, depth);
+  for (const s of suggestions) {
+    keywords.set(s.keyword.toLowerCase(), s);
+  }
+
+  // Step 2: SERP analysis via GoAnyAPI SERP Stable (1 credit per request).
+  console.log("\n━━━ Step 2: SERP Analysis via GoAnyAPI (PAA + Related + Features) ━━━");
+
+  const searchQueries = [];
+  for (const seed of seeds) {
+    searchQueries.push(seed);
+    searchQueries.push(`best ${seed}`);
+    searchQueries.push(`what is ${seed}`);
+    if (depth === "deep") {
+      searchQueries.push(`${seed} vs`);
+      searchQueries.push(`how does ${seed} work`);
+      searchQueries.push(`${seed} comparison 2026`);
+      searchQueries.push(`is ${seed} worth it`);
+    } else if (depth === "normal") {
+      searchQueries.push(`${seed} vs`);
+      searchQueries.push(`how does ${seed} work`);
+    }
+  }
+
+  for (const query of searchQueries) {
+    console.log(`\n🔎 SERP: "${query}"`);
+    try {
+      const result = await goanyapiSerpSearch(query, gl, hl);
+      const features = Array.isArray(result.serp_features)
+        ? result.serp_features
+        : [];
+      const featureNames = new Set();
+
+      for (const feature of features) {
+        const mapped = mapGoAnyApiFeatureType(feature.type);
+        if (mapped) featureNames.add(mapped);
+
+        const items = Array.isArray(feature.items) ? feature.items : [];
+
+        if (mapped === "people_also_ask") {
+          const questions = items
+            .map((it) => it.title || it.text || "")
+            .filter(Boolean);
+          console.log(`  PAA: ${questions.length} questions`);
+          for (const question of questions) {
+            paaQuestions.push({ question, snippet: "", source: "", link: "", fromQuery: query });
+            if (!keywords.has(question.toLowerCase())) {
+              keywords.set(question.toLowerCase(), {
+                keyword: question,
+                source: "people_also_ask",
+                seed: query,
+              });
+            }
+          }
+        }
+
+        if (mapped === "related_search") {
+          const queries = items
+            .map((it) => it.title || it.text || "")
+            .filter(Boolean);
+          console.log(`  Related: ${queries.length} queries`);
+          for (const rs of queries) {
+            if (!relatedSearches.has(rs.toLowerCase())) {
+              relatedSearches.set(rs.toLowerCase(), { query: rs, fromQuery: query });
+            }
+            if (!keywords.has(rs.toLowerCase())) {
+              keywords.set(rs.toLowerCase(), {
+                keyword: rs,
+                source: "related_search",
+                seed: query,
+              });
+            }
+          }
+        }
+      }
+
+      if (featureNames.size > 0) {
+        console.log(`  Features: ${[...featureNames].join(", ")}`);
+        serpFeaturesByQuery[query] = [...featureNames];
+      }
+    } catch (e) {
+      console.log(`  Error: ${e.message}`);
+    }
+    await sleep(1000);
+  }
+
+  return {
+    keywords: [...keywords.values()],
+    paaQuestions,
+    relatedSearches: [...relatedSearches.values()],
+    serpFeatures: serpFeaturesByQuery,
+  };
+}
+
 // ─── Output Formatting ───────────────────────────────────────────────────────
 
 function formatOutput(data, mode) {
@@ -486,7 +697,7 @@ function printSummary(output, mode) {
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("  KEYWORD EXPLORER — RESULTS SUMMARY");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-  console.log(`  Mode: ${mode === "free" ? "Free (autocomplete)" : "SerpAPI (full)"}`);
+  console.log(`  Mode: ${mode === "free" ? "Free (autocomplete)" : mode === "goanyapi" ? "GoAnyAPI SERP Stable (full)" : "SerpAPI (full)"}`);
   console.log(`  Total Keywords: ${output.meta.totalKeywords}`);
 
   if (mode !== "free") {
@@ -547,15 +758,20 @@ async function main() {
   console.log(`\nSeeds: ${opts.seeds.join(", ")}`);
   console.log(`Depth: ${opts.depth}`);
   console.log(`Region: ${opts.gl}/${opts.hl}`);
-  console.log(`Mode: ${opts.free ? "Free (autocomplete)" : "SerpAPI (full)"}`);
+  console.log(`Mode: ${opts.provider === "goanyapi" ? "GoAnyAPI SERP Stable (full)" : opts.free ? "Free (autocomplete)" : "SerpAPI (full)"}`);
 
   let rawData;
-  const mode = opts.free ? "free" : "serpapi";
-
-  if (opts.free) {
-    rawData = await runFreeAutocomplete(opts.seeds, opts.gl, opts.hl, opts.depth);
+  let mode;
+  if (opts.provider === "goanyapi") {
+    mode = "goanyapi";
+    rawData = await runGoAnyApiResearch(opts.seeds, opts.gl, opts.hl, opts.depth);
   } else {
-    rawData = await runSerpApiResearch(opts.seeds, opts.gl, opts.hl, opts.depth);
+    mode = opts.free ? "free" : "serpapi";
+    if (opts.free) {
+      rawData = await runFreeAutocomplete(opts.seeds, opts.gl, opts.hl, opts.depth);
+    } else {
+      rawData = await runSerpApiResearch(opts.seeds, opts.gl, opts.hl, opts.depth);
+    }
   }
 
   const output = formatOutput(rawData, mode);

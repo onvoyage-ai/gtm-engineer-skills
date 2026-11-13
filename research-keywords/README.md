@@ -101,6 +101,13 @@ SERPAPI_KEY=xxx node scripts/keyword-explorer.mjs \
   --depth deep \
   --out keywords.json
 
+# Full mode with GoAnyAPI (SERP Stable edition, 1 credit per SERP request;
+# autocomplete still uses Google's free suggestions endpoint)
+GOANYAPI_API_KEY=xxx node scripts/keyword-explorer.mjs \
+  --seeds "physical AI, DePAI" \
+  --provider goanyapi \
+  --out keywords.json
+
 # Quick scan for a single seed
 node scripts/keyword-explorer.mjs -s "machine economy" --free -d quick
 ```
@@ -110,6 +117,7 @@ node scripts/keyword-explorer.mjs -s "machine economy" --free -d quick
 |---|---|---|
 | `--seeds, -s` | Comma-separated seed keywords (required) | — |
 | `--free` | Free mode: Google suggestions, no API key | auto if no key |
+| `--provider, -p` | SERP provider: `serpapi` or `goanyapi` | `serpapi` |
 | `--depth, -d` | `quick` / `normal` / `deep` | `normal` |
 | `--out, -o` | Output JSON file path | auto-generated |
 | `--gl` | Country code | `us` |
@@ -136,6 +144,12 @@ SERPAPI_KEY=xxx node scripts/serp-analyzer.mjs \
 SERPAPI_KEY=xxx node scripts/serp-analyzer.mjs \
   --keywords "what is DePAI, physical AI companies, best AI robotics crypto" \
   --track "axisrobotics.ai"
+
+# Analyze with GoAnyAPI (SERP Stable edition, 1 credit per request)
+GOANYAPI_API_KEY=xxx node scripts/serp-analyzer.mjs \
+  --keywords "what is DePAI" \
+  --provider goanyapi \
+  --track "axisrobotics.ai"
 ```
 
 **Options:**
@@ -145,7 +159,12 @@ SERPAPI_KEY=xxx node scripts/serp-analyzer.mjs \
 | `--keywords, -k` | Comma-separated keywords to analyze | — |
 | `--top, -t` | How many keywords from input file | `10` |
 | `--track` | Comma-separated domains to track | — |
+| `--provider, -p` | SERP provider: `serpapi` or `goanyapi` | `serpapi` |
 | `--out, -o` | Output JSON file path | auto-generated |
+
+**Provider keys:**
+- `SERPAPI_KEY` — SerpAPI key for the default provider.
+- `GOANYAPI_API_KEY` — GoAnyAPI key (https://goanyapi.com) for `--provider goanyapi`. SERP data comes from the SERP Stable edition at 1 credit per request; failed requests are not billed.
 
 **What it outputs:**
 - Difficulty estimate per keyword (easy / medium / hard)
