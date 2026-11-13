@@ -79,6 +79,8 @@ If the user's project has the `research-keywords/scripts/` directory, offer to r
 1. **keyword-explorer.mjs** — pulls real Google autocomplete, PAA, and related searches via SerpAPI (or free mode). Run with the seed keywords from Phase 1.
 2. **serp-analyzer.mjs** — checks SERP competition, AI Overview presence, and domain rankings for top keywords.
 
+Both scripts also accept `--provider goanyapi` with `GOANYAPI_API_KEY` set, using the GoAnyAPI SERP Stable edition (1 credit per SERP request; autocomplete stays on Google's free suggestions endpoint). Use it when the user has a GoAnyAPI key instead of SerpAPI.
+
 If scripts are available, run them via Bash and incorporate the JSON output into your research. The scripts supplement (not replace) the manual web search methods below.
 
 ### Method 1: Google Autocomplete Mining
