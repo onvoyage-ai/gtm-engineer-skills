@@ -98,11 +98,9 @@ function parseArgs() {
   }
 
   if (!opts.free && !SERPAPI_KEY) {
-    console.log(
-      "No SERPAPI_KEY found. Falling back to free mode (autocomplete only)."
-    );
-    console.log(
-      "Set SERPAPI_KEY env var for full features (PAA, Related Searches, SERP features).\n"
+    process.stderr.write(
+      "No SERPAPI_KEY found. Falling back to free mode (autocomplete only).\n" +
+      "Set SERPAPI_KEY env var for full features (PAA, Related Searches, SERP features).\n\n"
     );
     opts.free = true;
   }
@@ -227,7 +225,7 @@ async function runFreeAutocomplete(seeds, gl, hl, depth) {
   const allSuggestions = new Map(); // keyword -> { source, seed }
 
   for (const seed of seeds) {
-    console.log(`\n🔍 Autocomplete: "${seed}"`);
+    log(`\n🔍 Autocomplete: "${seed}"`);
 
     for (const suffix of suffixes) {
       const query = seed + suffix;
@@ -244,15 +242,13 @@ async function runFreeAutocomplete(seeds, gl, hl, depth) {
         }
       }
 
-      console.log(
-        `  "${query.trim()}" → ${suggestions.length} suggestions`
-      );
+      log(`  "${query.trim()}" → ${suggestions.length} suggestions`);
       await sleep(300); // rate limit
     }
 
     // Also try alphabet expansion: "seed a", "seed b", etc.
     if (depth === "deep") {
-      console.log(`  Running alphabet expansion for "${seed}"...`);
+      log(`  Running alphabet expansion for "${seed}"...`);
       for (const letter of "abcdefghijklmnopqrstuvwxyz") {
         const query = `${seed} ${letter}`;
         const suggestions = await googleSuggest(query, gl, hl);
@@ -345,7 +341,7 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
   const relatedSearches = new Map();
 
   // Step 1: Autocomplete for all seeds
-  console.log("\n━━━ Step 1: Autocomplete Mining ━━━");
+  log("\n━━━ Step 1: Autocomplete Mining ━━━");
 
   const suffixes =
     depth === "quick"
@@ -355,7 +351,7 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
         : AUTOCOMPLETE_SUFFIXES.slice(0, 9);
 
   for (const seed of seeds) {
-    console.log(`\n🔍 "${seed}"`);
+    log(`\n🔍 "${seed}"`);
     for (const suffix of suffixes) {
       const query = seed + suffix;
       try {
@@ -369,16 +365,16 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
             });
           }
         }
-        console.log(`  "${query.trim()}" → ${suggestions.length} suggestions`);
+        log(`  "${query.trim()}" → ${suggestions.length} suggestions`);
       } catch (e) {
-        console.log(`  "${query.trim()}" → error: ${e.message}`);
+        log(`  "${query.trim()}" → error: ${e.message}`);
       }
       await sleep(500);
     }
   }
 
   // Step 2: Google Search for PAA, Related Searches, SERP features
-  console.log("\n━━━ Step 2: SERP Analysis (PAA + Related + Features) ━━━");
+  log("\n━━━ Step 2: SERP Analysis (PAA + Related + Features) ━━━");
 
   const searchQueries = [];
   for (const seed of seeds) {
@@ -397,13 +393,13 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
   }
 
   for (const query of searchQueries) {
-    console.log(`\n🔎 SERP: "${query}"`);
+    log(`\n🔎 SERP: "${query}"`);
     try {
       const result = await serpGoogleSearch(query, gl, hl);
 
       // PAA
       if (result.paa.length > 0) {
-        console.log(`  PAA: ${result.paa.length} questions`);
+        log(`  PAA: ${result.paa.length} questions`);
         for (const q of result.paa) {
           paaQuestions.push({ ...q, fromQuery: query });
           if (!keywords.has(q.question.toLowerCase())) {
@@ -418,7 +414,7 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
 
       // Related Searches
       if (result.relatedSearches.length > 0) {
-        console.log(`  Related: ${result.relatedSearches.length} queries`);
+        log(`  Related: ${result.relatedSearches.length} queries`);
         for (const rs of result.relatedSearches) {
           if (!relatedSearches.has(rs.toLowerCase())) {
             relatedSearches.set(rs.toLowerCase(), { query: rs, fromQuery: query });
@@ -435,11 +431,11 @@ async function runSerpApiResearch(seeds, gl, hl, depth) {
 
       // SERP Features
       if (result.serpFeatures.length > 0) {
-        console.log(`  Features: ${result.serpFeatures.join(", ")}`);
+        log(`  Features: ${result.serpFeatures.join(", ")}`);
         serpFeaturesByQuery[query] = result.serpFeatures;
       }
     } catch (e) {
-      console.log(`  Error: ${e.message}`);
+      log(`  Error: ${e.message}`);
     }
     await sleep(1000);
   }
@@ -482,32 +478,36 @@ function formatOutput(data, mode) {
   return output;
 }
 
+function log(msg) {
+  process.stderr.write(msg + "\n");
+}
+
 function printSummary(output, mode) {
-  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("  KEYWORD EXPLORER — RESULTS SUMMARY");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-  console.log(`  Mode: ${mode === "free" ? "Free (autocomplete)" : "SerpAPI (full)"}`);
-  console.log(`  Total Keywords: ${output.meta.totalKeywords}`);
+  log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  log("  KEYWORD EXPLORER — RESULTS SUMMARY");
+  log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+  log(`  Mode: ${mode === "free" ? "Free (autocomplete)" : "SerpAPI (full)"}`);
+  log(`  Total Keywords: ${output.meta.totalKeywords}`);
 
   if (mode !== "free") {
-    console.log(`  People Also Ask: ${output.meta.paaCount} questions`);
-    console.log(`  Related Searches: ${output.meta.relatedSearchCount}`);
+    log(`  People Also Ask: ${output.meta.paaCount} questions`);
+    log(`  Related Searches: ${output.meta.relatedSearchCount}`);
 
     if (output.meta.queriesWithAIOverview.length > 0) {
-      console.log(`\n  Queries with AI Overview (high GEO opportunity):`);
+      log(`\n  Queries with AI Overview (high GEO opportunity):`);
       for (const q of output.meta.queriesWithAIOverview) {
-        console.log(`    ✦ ${q}`);
+        log(`    ✦ ${q}`);
       }
     }
 
     // Top PAA questions
     if (output.peopleAlsoAsk.length > 0) {
-      console.log(`\n  Top People Also Ask questions:`);
+      log(`\n  Top People Also Ask questions:`);
       const seen = new Set();
       let count = 0;
       for (const q of output.peopleAlsoAsk) {
         if (!seen.has(q.question) && count < 15) {
-          console.log(`    ? ${q.question}`);
+          log(`    ? ${q.question}`);
           seen.add(q.question);
           count++;
         }
@@ -521,18 +521,18 @@ function printSummary(output, mode) {
   for (const k of kws) {
     sources[k.source] = (sources[k.source] || 0) + 1;
   }
-  console.log(`\n  Keywords by source:`);
+  log(`\n  Keywords by source:`);
   for (const [src, count] of Object.entries(sources).sort((a, b) => b[1] - a[1])) {
-    console.log(`    ${src}: ${count}`);
+    log(`    ${src}: ${count}`);
   }
 
   // Sample keywords
-  console.log(`\n  Sample keywords (first 20):`);
+  log(`\n  Sample keywords (first 20):`);
   for (const k of kws.slice(0, 20)) {
-    console.log(`    - ${k.keyword} [${k.source}]`);
+    log(`    - ${k.keyword} [${k.source}]`);
   }
 
-  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+  log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -540,14 +540,14 @@ function printSummary(output, mode) {
 async function main() {
   const opts = parseArgs();
 
-  console.log("╔══════════════════════════════════════════════════╗");
-  console.log("║         KEYWORD EXPLORER v1.0                   ║");
-  console.log("║  SERP-powered keyword research for SEO & GEO    ║");
-  console.log("╚══════════════════════════════════════════════════╝");
-  console.log(`\nSeeds: ${opts.seeds.join(", ")}`);
-  console.log(`Depth: ${opts.depth}`);
-  console.log(`Region: ${opts.gl}/${opts.hl}`);
-  console.log(`Mode: ${opts.free ? "Free (autocomplete)" : "SerpAPI (full)"}`);
+  log("╔══════════════════════════════════════════════════╗");
+  log("║         KEYWORD EXPLORER v1.0                   ║");
+  log("║  SERP-powered keyword research for SEO & GEO    ║");
+  log("╚══════════════════════════════════════════════════╝");
+  log(`\nSeeds: ${opts.seeds.join(", ")}`);
+  log(`Depth: ${opts.depth}`);
+  log(`Region: ${opts.gl}/${opts.hl}`);
+  log(`Mode: ${opts.free ? "Free (autocomplete)" : "SerpAPI (full)"}`);
 
   let rawData;
   const mode = opts.free ? "free" : "serpapi";
@@ -563,12 +563,9 @@ async function main() {
 
   if (opts.out) {
     fs.writeFileSync(opts.out, JSON.stringify(output, null, 2));
-    console.log(`Results saved to: ${opts.out}`);
+    process.stderr.write(`Results saved to: ${opts.out}\n`);
   } else {
-    // Also save to a default location
-    const defaultOut = `keyword-explorer-${Date.now()}.json`;
-    fs.writeFileSync(defaultOut, JSON.stringify(output, null, 2));
-    console.log(`Results saved to: ${defaultOut}`);
+    process.stdout.write(JSON.stringify(output, null, 2) + "\n");
   }
 }
 
